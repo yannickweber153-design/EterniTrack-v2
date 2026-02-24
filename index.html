@@ -759,22 +759,27 @@ body {
 .gantt-today-line {
   position: absolute;
   top: 0; bottom: 0;
-  width: 1px;
-  background: #94a3b8;
-  opacity: 0.5;
-  z-index: 8;
+  width: 2px;
+  background: #e11d48;
+  opacity: 0.85;
+  z-index: 10;
   pointer-events: none;
 }
 .gantt-today-pip {
   position: absolute;
-  top: 4px;
-  left: 4px;
+  top: -4px;
+  left: 5px;
   font-family: 'DM Mono', monospace;
-  font-size: 8px;
+  font-size: 9px;
   font-weight: 700;
-  color: #64748b;
-  letter-spacing: 1px;
+  color: #e11d48;
+  letter-spacing: 0.5px;
   white-space: nowrap;
+  background: #fff;
+  padding: 2px 5px;
+  border-radius: 4px;
+  border: 1px solid rgba(225,29,72,0.3);
+  box-shadow: 0 1px 4px rgba(225,29,72,0.15);
 }
 
 /* THE BAR — slim and elegant */
@@ -1599,9 +1604,6 @@ footer {
     <div class="nav-item" onclick="switchNav('overview',this)">
       <span class="nav-icon">▦</span> Gantt-Ansicht
     </div>
-    <div class="nav-item" onclick="switchNav('checklist',this)">
-      <span class="nav-icon">✦</span> Checklisten
-    </div>
   </div>
 
   <div class="sidebar-section">
@@ -1822,18 +1824,6 @@ footer {
     <div id="detail-content"></div>
   </div>
 
-  <!-- CHECKLIST VIEW -->
-  <div class="view" id="view-checklist">
-    <div class="section-head">
-      <span class="section-title">Deal-Checklisten</span>
-    </div>
-    <div id="checklist-content"></div>
-    <div class="empty-state" id="checklist-empty" style="display:none;">
-      <div class="empty-icon">✦</div>
-      <div class="empty-title">Keine Deals vorhanden</div>
-      <div class="empty-sub">Erstelle Deals um Checklisten zu sehen.</div>
-    </div>
-  </div>
 
 </div>
 <!-- END CONTENT -->
@@ -2218,7 +2208,6 @@ function renderAll() {
   renderDashProjects();
   renderAllProjects();
   renderGantt();
-  renderChecklist();
   updateBadge();
   renderActivities();
 }
@@ -2233,15 +2222,17 @@ function renderKPI() {
   const closed = projects.filter(p => p.status === 'closed');
   document.getElementById('kpi-total').textContent = closed.length;
   document.getElementById('kpi-sub-total').textContent = closed.length === 1 ? 'Closed Buyout' : 'Closed Buyouts';
-  // Ø IRR
-  const avgIRR = closed.length ? (closed.reduce((s,p) => s + (p.irr||0), 0) / closed.length) : 0;
+  // Ø IRR (nur Deals mit IRR)
+  const irrDeals = closed.filter(p => p.irr != null);
+  const avgIRR = irrDeals.length ? (irrDeals.reduce((s,p) => s + p.irr, 0) / irrDeals.length) : 0;
   document.getElementById('kpi-active').textContent = avgIRR ? avgIRR.toFixed(1) + '%' : '—';
-  // Invested Equity (sum of equity in Tsd → to Mio)
-  const totalEq = closed.reduce((s,p) => s + (p.equity||0), 0);
-  document.getElementById('kpi-vol').textContent = totalEq >= 1000 ? `€${(totalEq/1000).toFixed(2)}M` : `€${totalEq}k`;
-  // Ø MOIC
-  const avgMOIC = closed.length ? (closed.reduce((s,p) => s + (p.moicFull||0), 0) / closed.length) : 0;
-  document.getElementById('kpi-progress').textContent = avgMOIC ? avgMOIC.toFixed(2) + 'x' : '—';
+  // Kumulierter EV aller Deals (in Mio)
+  const totalEV = closed.reduce((s,p) => s + (p.ev||0), 0);
+  document.getElementById('kpi-vol').textContent = totalEV >= 1000 ? `€${(totalEV/1000).toFixed(2)}M` : `€${totalEV}k`;
+  // Ø EBIT Multiple
+  const mulDeals = closed.filter(p => p.ebitMultiple != null);
+  const avgMul = mulDeals.length ? (mulDeals.reduce((s,p) => s + p.ebitMultiple, 0) / mulDeals.length) : 0;
+  document.getElementById('kpi-progress').textContent = avgMul ? avgMul.toFixed(2) + 'x' : '—';
 }
 
 function renderActivities() {
@@ -2265,7 +2256,7 @@ function makeCard(p, compact = false) {
   const dots = PHASES.map((_,i) => `<div class="pdot ${i < p.phase ? 'done' : i === p.phase ? 'current' : ''}"></div>`).join('');
   const statusLabel = { active:'Aktiv', closed:'Abgeschlossen', pending:'Ausstehend' }[p.status];
   const isClosed = p.status === 'closed';
-  const closedDate = p.closedDate ? fmtDate(p.closedDate) : fmtDate(p.end);
+  const closedDate = p.closingDate ? fmtDate(p.closingDate) : (p.end ? fmtDate(p.end) : '—');
 
   // Financial metrics block
   const financialsHtml = `
@@ -2356,9 +2347,11 @@ function renderGanttCanvas() {
     const mNames = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
     const today = new Date();
 
-    // Range: earliest start to 18 months from latest end (future scrollable)
+    // Range: earliest start to 12+ months from latest end (future scrollable)
+    // Fallback for missing end dates: estimate 12 months from start
+    const effectiveEnd = p => p.end || (() => { const d = new Date(p.start); d.setFullYear(d.getFullYear()+1); return d.toISOString().split('T')[0]; })();
     const allStarts = projects.map(p => new Date(p.start));
-    const allEnds   = projects.map(p => new Date(p.end));
+    const allEnds   = projects.map(p => new Date(effectiveEnd(p)));
     const minD = new Date(Math.min(...allStarts)); minD.setDate(1);
     const maxD = new Date(Math.max(...allEnds));
     maxD.setMonth(maxD.getMonth() + 12); maxD.setDate(1); // 12 months into future
@@ -2400,18 +2393,19 @@ function renderGanttCanvas() {
     }).join('');
 
     // Today line
+    const todayLabel = today.toLocaleDateString('de-DE', { day:'2-digit', month:'short', year:'numeric' });
     const todayLine = `
-      <div class="gantt-today-line" style="left:${todayPx}px; position:absolute; top:0; bottom:0;">
-        <div class="gantt-today-pip">HEUTE</div>
+      <div class="gantt-today-line" style="left:${todayPx}px;">
+        <div class="gantt-today-pip">HEUTE · ${todayLabel}</div>
       </div>`;
 
     const dealColors = ['gdc-1','gdc-2','gdc-3','gdc-4','gdc-5'];
 
     const trackRows = projects.map((p, idx) => {
-      const pStart = new Date(p.start), pEnd = new Date(p.end);
+      const pStart = new Date(p.start), pEnd = new Date(effectiveEnd(p));
       const totalMs_deal = pEnd - pStart;
       const barX = px(p.start);
-      const barW = Math.max(4, px(p.end) - barX);
+      const barW = Math.max(4, px(effectiveEnd(p)) - barX);
       const colorCls = dealColors[idx % dealColors.length];
 
       // Use actual dates if set, otherwise estimate from phase proportions
@@ -2488,7 +2482,8 @@ function renderGanttCanvas() {
     // Scroll to show earliest deal (a little before it)
     const trackPane = el.querySelector('.gantt-track-pane');
     if (trackPane) {
-      const scrollTo = Math.max(0, px(new Date(Math.min(...projects.map(p => new Date(p.start))))) - 40);
+      // Scroll so that today's line is visible (~200px from left edge)
+      const scrollTo = Math.max(0, todayPx - 200);
       trackPane.scrollLeft = scrollTo;
     }
   });
@@ -2513,45 +2508,6 @@ function closeGanttFullscreen() {
   document.body.style.overflow = '';
 }
 
-function renderChecklist() {
-  const el = document.getElementById('checklist-content');
-  const empty = document.getElementById('checklist-empty');
-  if (projects.length === 0) { el.innerHTML = ''; empty.style.display = 'block'; return; }
-  empty.style.display = 'none';
-  el.innerHTML = projects.map(p => {
-    const allTasks = PHASES.flatMap((ph, pi) => ph.tasks.map((t, ti) => ({ ph: pi, ti, text: t, done: pi < p.phase || (pi === p.phase && ti < Math.ceil(ph.tasks.length * 0.5)) })));
-    const done = allTasks.filter(t => t.done).length;
-    const total = allTasks.length;
-    const sections = PHASES.map((ph, pi) => {
-      const items = ph.tasks.map((t, ti) => {
-        const isDone = pi < p.phase || (pi === p.phase && ti < Math.ceil(ph.tasks.length * 0.5));
-        return `<div class="task-item t-${isDone?'done':'pending'}">
-          <div class="task-box">${isDone ? '✓' : ''}</div>
-          <span class="task-lbl">${t}</span>
-        </div>`;
-      }).join('');
-      const phDone = pi < p.phase ? ph.tasks.length : pi === p.phase ? Math.ceil(ph.tasks.length*0.5) : 0;
-      return `<div style="margin-bottom:14px;">
-        <div style="font-size:12px;font-weight:600;color:${pi < p.phase ? 'var(--gold)' : pi === p.phase ? 'var(--navy)' : 'var(--muted)'};margin-bottom:8px;">${ph.icon} Phase ${pi+1} — ${ph.name} &nbsp;<span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:400;">(${phDone}/${ph.tasks.length})</span></div>
-        ${items}
-      </div>`;
-    }).join('');
-    return `<div class="info-card" style="margin-bottom:20px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-        <div>
-          <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;">${p.name}</div>
-          <div style="font-size:12px;color:var(--muted);margin-top:3px;">EterniTeam GmbH → ${p.target} · €${p.volume}M · ${p.sector || ''}</div>
-        </div>
-        <div style="text-align:right;">
-          <div style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:500;color:var(--gold);">${done}/${total}</div>
-          <div style="font-size:11px;color:var(--muted);">Tasks erledigt</div>
-        </div>
-      </div>
-      <div class="progress-track" style="margin-bottom:20px;"><div class="progress-fill" style="width:${Math.round(done/total*100)}%"></div></div>
-      ${sections}
-    </div>`;
-  }).join('');
-}
 
 // ─── DETAIL ───
 function openDetail(id) {
@@ -2569,7 +2525,7 @@ function openDetail(id) {
       const d = ti < tasksDone;
       return `<div class="task-item t-${d?'done':'pending'}"><div class="task-box">${d?'✓':''}</div><span class="task-lbl">${t}</span></div>`;
     }).join('');
-    const phDate = interpDate(p.start, p.end, i/5);
+    const phDate = interpDate(p.start, p.end || p.start, i/5);
     return `<div class="vt-phase ${state}">
       <div class="vt-col">
         <div class="vt-node">${state === 'ph-done' ? '✓' : ph.icon}</div>
@@ -2604,12 +2560,12 @@ function openDetail(id) {
           <div class="detail-big-title">${p.name}</div>
           <div class="detail-subtitle">
             <span class="deal-badge badge-buyout" style="display:inline;">BUYOUT</span>
-            &nbsp;EterniTeam GmbH → ${p.target} &nbsp;·&nbsp; €${p.volume}M &nbsp;·&nbsp; ${p.sector || ''}
+            &nbsp;EterniTeam GmbH → ${p.target} &nbsp;·&nbsp; EV €${p.ev ? (p.ev/1000).toFixed(2)+'M' : '—'} &nbsp;·&nbsp; ${p.sector || ''}
           </div>
         </div>
         <div style="display:flex;gap:10px;">
           <button class="btn btn-ghost btn-sm" onclick="openExportModal()">↗ Export</button>
-          <button class="btn btn-primary btn-sm" onclick="openPhaseModal(${p.id})">Phase aktualisieren</button>
+          <button class="btn btn-primary btn-sm" onclick="openEditModal(${p.id})">✎ Deal bearbeiten</button>
         </div>
       </div>
       <div class="detail-layout">
@@ -2682,39 +2638,146 @@ function openDetail(id) {
   document.getElementById('breadcrumb-sub').textContent = 'Projektdetail';
 }
 
-function openPhaseModal(id) {
+function openEditModal(id) {
   const p = projects.find(x => x.id === id);
-  const opts = PHASES.map((ph,i) => `<option value="${i}" ${i === p.phase ? 'selected' : ''}>Phase ${i+1} — ${ph.name}</option>`).join('');
-  const statusOpts = ['active','pending','closed'].map(s => `<option value="${s}" ${s === p.status ? 'selected' : ''}>${{active:'Aktiv',pending:'Ausstehend',closed:'Abgeschlossen'}[s]}</option>`).join('');
-  const riskOpts = ['low','medium','high'].map(r => `<option value="${r}" ${r === p.risk ? 'selected' : ''}>${{low:'Niedrig',medium:'Mittel',high:'Hoch'}[r]}</option>`).join('');
+  const v = f => f != null ? f : '';
+  const sel = (opts, cur) => opts.map(([val, lbl]) => `<option value="${val}" ${val === cur ? 'selected' : ''}>${lbl}</option>`).join('');
+  const phaseOpts = sel(PHASES.map((ph,i) => [`${i}`, `Phase ${i+1} — ${ph.name}`]), `${p.phase}`);
+  const dsOpts    = sel([['IO in preparation','IO in preparation'],['IO sent','IO sent'],['IO negotiation','IO negotiation'],['LOI preparation','LOI preparation'],['LOI sent','LOI sent'],['Deal closed','Deal closed']], p.dealStatus || '');
+  const riskOpts  = sel([['low','Niedrig'],['medium','Mittel'],['high','Hoch']], p.risk);
+
   document.getElementById('add-modal').innerHTML = `
-    <div class="modal-box">
-      <div class="modal-title">Deal aktualisieren</div>
-      <div class="modal-sub">${p.name} — Aktuellen Stand anpassen.</div>
-      <div class="form-group"><label class="form-label">Aktuelle Phase</label><select class="form-select" id="upd-phase">${opts}</select></div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Status</label><select class="form-select" id="upd-status">${statusOpts}</select></div>
-        <div class="form-group"><label class="form-label">Risiko</label><select class="form-select" id="upd-risk">${riskOpts}</select></div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" onclick="resetAddModal();closeModal('add-modal')">Abbrechen</button>
-        <button class="btn btn-primary" onclick="updateDeal(${id})">Speichern →</button>
-      </div>
-    </div>`;
+  <div class="modal-box" style="max-width:680px;">
+    <div class="modal-title">Deal bearbeiten — ${p.name}</div>
+    <div class="modal-sub">Alle Felder können hier aktualisiert werden. Finanzielle Angaben in Tsd. €.</div>
+
+    <div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-family:'DM Mono',monospace;margin:16px 0 8px;">Stammdaten</div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Codename</label><input class="form-input" id="upd-name" value="${v(p.name)}"></div>
+      <div class="form-group"><label class="form-label">Pipeline-Status</label><select class="form-select" id="upd-dealstatus">${dsOpts}</select></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Sektor</label><input class="form-input" id="upd-sector" value="${v(p.sector)}"></div>
+      <div class="form-group"><label class="form-label">Region/Bundesland</label><input class="form-input" id="upd-region" value="${v(p.region)}"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Target-Unternehmen</label><input class="form-input" id="upd-target" value="${v(p.target)}"></div>
+      <div class="form-group"><label class="form-label">Risikolevel</label><select class="form-select" id="upd-risk">${riskOpts}</select></div>
+    </div>
+
+    <div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-family:'DM Mono',monospace;margin:16px 0 8px;">Finanzkennzahlen (Tsd. €)</div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Revenues</label><input class="form-input" id="upd-revenues" type="number" value="${v(p.revenues)}"></div>
+      <div class="form-group"><label class="form-label">EBITDA</label><input class="form-input" id="upd-ebitda" type="number" value="${v(p.ebitda)}"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">EBIT</label><input class="form-input" id="upd-ebit" type="number" value="${v(p.ebit)}"></div>
+      <div class="form-group"><label class="form-label">EBIT Margin (%)</label><input class="form-input" id="upd-ebitmargin" type="number" step="0.01" value="${v(p.ebitMargin)}"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">EV</label><input class="form-input" id="upd-ev" type="number" value="${v(p.ev)}"></div>
+      <div class="form-group"><label class="form-label">Earn-Out (%)</label><input class="form-input" id="upd-earnout" type="number" step="0.01" value="${v(p.earnOutPct)}"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Fixed Price (Cash Invest)</label><input class="form-input" id="upd-fixedprice" type="number" value="${v(p.fixedPrice)}"></div>
+      <div class="form-group"><label class="form-label">Equity Cash Component</label><input class="form-input" id="upd-equitycash" type="number" value="${v(p.equityCash)}"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">EBITDA Multiple</label><input class="form-input" id="upd-ebitdamul" type="number" step="0.01" value="${v(p.ebitdaMultiple)}"></div>
+      <div class="form-group"><label class="form-label">EBIT Multiple</label><input class="form-input" id="upd-ebitmul" type="number" step="0.01" value="${v(p.ebitMultiple)}"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Projected IRR (%)</label><input class="form-input" id="upd-irr" type="number" step="0.01" value="${p.irr != null ? p.irr : ''}"></div>
+      <div class="form-group"><label class="form-label">Aktuelle Phase</label><select class="form-select" id="upd-phase">${phaseOpts}</select></div>
+    </div>
+
+    <div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-family:'DM Mono',monospace;margin:16px 0 8px;">Meilenstein-Daten</div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Start Prozess</label><input class="form-input" id="upd-start" type="date" value="${v(p.start)}"></div>
+      <div class="form-group"><label class="form-label">Ziel-Closing</label><input class="form-input" id="upd-end" type="date" value="${v(p.end)}"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">DD Start</label><input class="form-input" id="upd-ddstart" type="date" value="${v(p.ddStart)}"></div>
+      <div class="form-group"><label class="form-label">DD Ende</label><input class="form-input" id="upd-ddend" type="date" value="${v(p.ddEnd)}"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Datum Zeichnung LOI</label><input class="form-input" id="upd-loidate" type="date" value="${v(p.loiDate)}"></div>
+      <div class="form-group"><label class="form-label">Datum Signing</label><input class="form-input" id="upd-signing" type="date" value="${v(p.signingDate)}"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Datum Closing</label><input class="form-input" id="upd-closing" type="date" value="${v(p.closingDate)}"></div>
+      <div class="form-group"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Beschreibung / Dealnotiz</label><textarea class="form-textarea" id="upd-desc">${v(p.desc)}</textarea></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost btn-sm" style="color:var(--red);border-color:rgba(184,58,58,0.3);" onclick="deleteDeal(${id})">Deal löschen</button>
+      <div style="flex:1;"></div>
+      <button class="btn btn-ghost" onclick="resetAddModal();closeModal('add-modal')">Abbrechen</button>
+      <button class="btn btn-primary" onclick="updateDeal(${id})">Speichern →</button>
+    </div>
+  </div>`;
   document.getElementById('add-modal').classList.add('open');
 }
 
 function updateDeal(id) {
   const p = projects.find(x => x.id === id);
-  p.phase = parseInt(document.getElementById('upd-phase').value);
-  p.status = document.getElementById('upd-status').value;
-  p.risk = document.getElementById('upd-risk').value;
-  activities.unshift({ user: 'YN', text: `hat <strong>${p.name}</strong> auf Phase ${p.phase+1} aktualisiert`, time: 'Gerade eben' });
+  const g = (el) => document.getElementById(el);
+  const num = (el) => { const v = g(el)?.value; return v !== '' && v != null ? parseFloat(v) : null; };
+  const str = (el) => g(el)?.value?.trim() || null;
+  const dat = (el) => g(el)?.value || null;
+
+  const dealStatus = g('upd-dealstatus').value;
+  const statusMap  = { 'Deal closed':'closed', 'LOI sent':'active', 'LOI preparation':'active', 'IO negotiation':'active', 'IO sent':'active', 'IO in preparation':'active' };
+
+  p.name         = g('upd-name').value.trim() || p.name;
+  p.target       = g('upd-target').value.trim() || p.target;
+  p.sector       = str('upd-sector');
+  p.region       = str('upd-region');
+  p.dealStatus   = dealStatus;
+  p.status       = statusMap[dealStatus] || 'active';
+  p.phase        = parseInt(g('upd-phase').value);
+  p.risk         = g('upd-risk').value;
+  p.revenues     = num('upd-revenues');
+  p.ebitda       = num('upd-ebitda');
+  p.ebit         = num('upd-ebit');
+  p.ebitMargin   = num('upd-ebitmargin');
+  p.ev           = num('upd-ev');
+  p.earnOutPct   = num('upd-earnout');
+  p.fixedPrice   = num('upd-fixedprice');
+  p.equityCash   = num('upd-equitycash');
+  p.ebitdaMultiple = num('upd-ebitdamul');
+  p.ebitMultiple   = num('upd-ebitmul');
+  p.irr          = g('upd-irr').value !== '' ? parseFloat(g('upd-irr').value) : null;
+  p.start        = dat('upd-start') || p.start;
+  p.end          = dat('upd-end');
+  p.ddStart      = dat('upd-ddstart');
+  p.ddEnd        = dat('upd-ddend');
+  p.loiDate      = dat('upd-loidate');
+  p.signingDate  = dat('upd-signing');
+  p.closingDate  = dat('upd-closing');
+  p.desc         = g('upd-desc').value.trim();
+
+  activities.unshift({ user: 'YN', text: `hat <strong>${p.name}</strong> aktualisiert`, time: 'Gerade eben' });
   resetAddModal();
   closeModal('add-modal');
   renderAll();
   openDetail(id);
   save();
+}
+
+function deleteDeal(id) {
+  const p = projects.find(x => x.id === id);
+  if (!confirm(`Deal "${p.name}" wirklich löschen?`)) return;
+  projects = projects.filter(x => x.id !== id);
+  activities.unshift({ user: 'YN', text: `hat <strong>${p.name}</strong> gelöscht`, time: 'Gerade eben' });
+  resetAddModal();
+  closeModal('add-modal');
+  renderAll();
+  save();
+  setView('projects');
+  document.getElementById('page-title').textContent = 'Alle Deals';
+  document.getElementById('breadcrumb-sub').textContent = 'Deal-Übersicht';
+  document.querySelectorAll('.nav-item')[1]?.classList.add('active');
 }
 
 function resetAddModal() {
@@ -2761,8 +2824,8 @@ function runExport() {
 }
 
 function exportCSV(list, title) {
-  const rows = [['Projektname','Typ','Käufer','Target','Sektor','Volumen (Mio €)','Status','Phase','Start','Closing','Risiko']];
-  list.forEach(p => rows.push([p.name, 'Buyout', 'EterniTeam GmbH', p.target, p.sector||'', p.volume, p.status, `Phase ${p.phase+1} - ${PHASES[p.phase].name}`, p.start, p.end, p.risk]));
+  const rows = [['Codename','Typ','Käufer','Target','Sektor','Region','EV (Tsd€)','Revenues','EBITDA','EBIT','EBIT Margin %','EBITDA Multiple','EBIT Multiple','IRR %','Pipeline Status','Start','Ziel-Closing','LOI','Signing','Closing','Risiko']];
+  list.forEach(p => rows.push([p.name, 'Buyout', 'EterniTeam GmbH', p.target, p.sector||'', p.region||'', p.ev||'', p.revenues||'', p.ebitda||'', p.ebit||'', p.ebitMargin||'', p.ebitdaMultiple||'', p.ebitMultiple||'', p.irr!=null?p.irr:'', p.dealStatus||p.status, p.start, p.end||'', p.loiDate||'', p.signingDate||'', p.closingDate||'', p.risk]));
   const csv = rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
   const blob = new Blob([csv], { type: 'text/csv' });
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
@@ -2785,14 +2848,14 @@ function exportPDF(list, title) {
           <div style="font-size:13px;color:#8a8278;">EterniTeam GmbH → ${p.target} · ${p.sector || ''}</div>
         </div>
         <div style="text-align:right;">
-          <div style="font-size:24px;font-weight:700;color:#1a2f4a;font-family:'DM Mono',monospace;">€${p.volume}M</div>
+          <div style="font-size:24px;font-weight:700;color:#1a2f4a;font-family:'DM Mono',monospace;">EV €${p.ev?(p.ev/1000).toFixed(3)+'M':'—'}</div>
           <div style="font-size:11px;color:#8a8278;font-family:'DM Mono',monospace;margin-top:2px;">${{active:'● AKTIV',closed:'● CLOSED',pending:'● AUSSTEHEND'}[p.status]}</div>
         </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:18px;background:#f6f5f0;border-radius:8px;padding:14px;">
         <div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#8a8278;margin-bottom:4px;font-family:'DM Mono',monospace;">Typ</div><div style="font-size:12px;font-weight:600;color:${typeColor};">BUYOUT</div></div>
         <div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#8a8278;margin-bottom:4px;font-family:'DM Mono',monospace;">Fortschritt</div><div style="font-size:12px;font-weight:600;">${prog}% (Ph. ${p.phase+1}/6)</div></div>
-        <div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#8a8278;margin-bottom:4px;font-family:'DM Mono',monospace;">Closing</div><div style="font-size:12px;font-weight:600;">${fmtDate(p.end)}</div></div>
+        <div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#8a8278;margin-bottom:4px;font-family:'DM Mono',monospace;">Closing</div><div style="font-size:12px;font-weight:600;">${p.closingDate ? fmtDate(p.closingDate) : (p.end ? fmtDate(p.end) : '—')}</div></div>
         <div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#8a8278;margin-bottom:4px;font-family:'DM Mono',monospace;">Risiko</div><div style="font-size:12px;font-weight:600;color:${riskColor};">${{low:'NIEDRIG',medium:'MITTEL',high:'HOCH'}[p.risk]}</div></div>
       </div>
       <div style="background:#f6f5f0;border-radius:6px;height:6px;margin-bottom:6px;"><div style="height:100%;width:${prog}%;background:linear-gradient(90deg,#1a2f4a,#8aad7f);border-radius:6px;"></div></div>
@@ -2938,7 +3001,7 @@ function exportPDF(list, title) {
     ${[
       ['Deals',list.length,'Total'],
       ['Aktiv',list.filter(p=>p.status==='active').length,'Deals'],
-      ['€'+list.reduce((s,p)=>s+p.volume,0)+'M','Volumen','Kumuliert'],
+      ['€'+(list.reduce((s,p)=>s+(p.ev||0),0)/1000).toFixed(2)+'M','EV kumuliert','Alle Deals'],
       [Math.round(list.reduce((s,p)=>s+p.phase/5*100,0)/(list.length||1))+'%','Ø Fortschritt','Alle Deals']
     ].map(([val,lab,sub])=>`
     <div style="background:#fff;border:1px solid #e2ddd3;border-radius:10px;padding:16px;text-align:center;">
@@ -2966,10 +3029,10 @@ function exportPDF(list, title) {
 
 // ─── MODAL / NAV ───
 function openModal() {
+  resetAddModal();
   document.getElementById('add-modal').classList.add('open');
-  const t = new Date(), e = new Date(); e.setMonth(e.getMonth()+6);
+  const t = new Date();
   document.getElementById('f-start').value = t.toISOString().split('T')[0];
-  document.getElementById('f-end').value = e.toISOString().split('T')[0];
 }
 
 function getAddModalHTML() { return `<div class="modal-box" style="max-width:680px;">
@@ -3125,7 +3188,6 @@ function switchNav(id, el) {
     document.getElementById('breadcrumb-sub').textContent = titles[id][1];
   }
   if (id === 'overview') renderGantt();
-  if (id === 'checklist') renderChecklist();
 }
 
 // ─── HELPERS ───
@@ -3138,9 +3200,22 @@ function interpDate(s, e, t) {
 }
 
 // ─── PERSISTENCE ───
-function save() { try { localStorage.setItem('eternitrack_projects', JSON.stringify(projects)); } catch(e){} }
+const DATA_VERSION = '2'; // Erhöhen wenn sich das Datenmodell ändert
+function save() {
+  try {
+    localStorage.setItem('eternitrack_projects', JSON.stringify(projects));
+    localStorage.setItem('eternitrack_version', DATA_VERSION);
+  } catch(e) {}
+}
 function load() {
   try {
+    const ver = localStorage.getItem('eternitrack_version');
+    if (ver !== DATA_VERSION) {
+      // Altes Datenmodell — gespeicherte Daten verwerfen, Default-Daten verwenden
+      localStorage.removeItem('eternitrack_projects');
+      localStorage.removeItem('eternitrack_version');
+      return;
+    }
     const d = localStorage.getItem('eternitrack_projects');
     if (d) { projects = JSON.parse(d); nextId = Math.max(...projects.map(p => p.id)) + 1; }
   } catch(e) {}
