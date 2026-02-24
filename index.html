@@ -2003,195 +2003,8 @@ const PHASES = [
   { name:'Closing', icon:'🎯', desc:'Vollzug, Kaufpreiszahlung, Eigentumsübertragung und Post-Merger-Integration.', tasks:['Closing-Conditions','Kaufpreis transferiert','Eigentumsübertragung','PMI-Kick-off','Closing-Statement'] },
 ];
 
-let projects = [
-  // ── CLOSED DEALS ──
-  {
-    id: 1, name: 'VEGANOVA', buyer: 'EterniTeam GmbH', target: 'Veganova GmbH',
-    sector: 'Fruit & vegetable wholeseller', region: 'Bavaria',
-    revenues: 4451, ebitda: 745, ebit: 727, ebitMargin: 16.33,
-    ev: 2000, earnOutPct: null, fixedPrice: null, equityCash: null,
-    ebitdaMultiple: 2.68, ebitMultiple: 2.75, irr: 56.94,
-    dealStatus: 'Deal closed', status: 'closed', phase: 5, risk: 'low',
-    start: '2025-01-15', end: '2025-08-12',
-    loiDate: '2025-03-20', ddStart: '2025-04-01', ddEnd: '2025-06-15',
-    signingDate: '2025-07-10', closingDate: '2025-08-12',
-    desc: 'Fruit & vegetable wholeseller in Bavaria. Stable B2B business model with long-standing customer relationships. IRR 56.94% — first EterniTeam portfolio company.',
-  },
-  {
-    id: 2, name: 'AQUA', buyer: 'EterniTeam GmbH', target: 'Aqua Sanitär GmbH',
-    sector: 'Craft Business – Sanitary Installation', region: 'North-Rhine Westfalia',
-    revenues: 3306, ebitda: 714, ebit: 650, ebitMargin: 19.66,
-    ev: 2197, earnOutPct: null, fixedPrice: null, equityCash: null,
-    ebitdaMultiple: 3.08, ebitMultiple: 3.38, irr: 51.21,
-    dealStatus: 'Deal closed', status: 'closed', phase: 5, risk: 'low',
-    start: '2025-02-01', end: '2025-08-28',
-    loiDate: '2025-04-15', ddStart: '2025-05-01', ddEnd: '2025-07-01',
-    signingDate: '2025-08-01', closingDate: '2025-08-28',
-    desc: 'Sanitary installation company in NRW with strong regional market position. High EBITDA margin of 19.66%. Second buyout — IRR 51.21%.',
-  },
-  {
-    id: 3, name: 'HODOR', buyer: 'EterniTeam GmbH', target: 'Hodor Fenster & Türen GmbH',
-    sector: 'Window and Door Installer', region: 'Berlin',
-    revenues: 4195, ebitda: 768, ebit: 696, ebitMargin: 16.59,
-    ev: 2855, earnOutPct: null, fixedPrice: null, equityCash: null,
-    ebitdaMultiple: 3.72, ebitMultiple: 4.10, irr: 35.77,
-    dealStatus: 'Deal closed', status: 'closed', phase: 5, risk: 'low',
-    start: '2025-01-20', end: '2025-07-15',
-    loiDate: '2025-03-10', ddStart: '2025-03-25', ddEnd: '2025-05-30',
-    signingDate: '2025-06-20', closingDate: '2025-07-15',
-    desc: 'Window and door installer in Berlin. Largest of the three Q3 deals with EV €2.855M. Third buyout — IRR 35.77%.',
-  },
-  // ── LOI SENT ──
-  {
-    id: 4, name: 'TO GO', buyer: 'EterniTeam GmbH', target: 'To Go Packaging GmbH',
-    sector: 'Integrated packaging solutions provider', region: 'Hesse',
-    revenues: 7200, ebitda: 979, ebit: 966, ebitMargin: 13.42,
-    ev: 3005, earnOutPct: 33.33, fixedPrice: 2003, equityCash: 751,
-    ebitdaMultiple: 3.07, ebitMultiple: 3.11, irr: 48.63,
-    dealStatus: 'LOI sent', status: 'active', phase: 2, risk: 'medium',
-    start: '2025-06-01', end: '2026-03-01',
-    loiDate: '2025-11-15', ddStart: null, ddEnd: null,
-    signingDate: null, closingDate: null,
-    desc: 'Integrated packaging solutions provider in Hesse. Strong revenue base of €7.2M with 33.33% earn-out structure.',
-  },
-  {
-    id: 5, name: 'METRO', buyer: 'EterniTeam GmbH', target: 'Metro Metallbau GmbH',
-    sector: 'Specialized metal construction', region: 'Berlin',
-    revenues: 2854, ebitda: 709, ebit: 653, ebitMargin: 22.89,
-    ev: 2415, earnOutPct: 35.00, fixedPrice: 1570, equityCash: 589,
-    ebitdaMultiple: 3.41, ebitMultiple: 3.70, irr: 45.35,
-    dealStatus: 'LOI sent', status: 'active', phase: 2, risk: 'medium',
-    start: '2025-07-01', end: '2026-04-01',
-    loiDate: '2025-12-01', ddStart: null, ddEnd: null,
-    signingDate: null, closingDate: null,
-    desc: 'Specialized metal construction company in Berlin. High EBIT margin of 22.89%. 35% earn-out component.',
-  },
-  {
-    id: 6, name: 'FLOOR', buyer: 'EterniTeam GmbH', target: 'Floor Coating GmbH',
-    sector: 'Floor coating service provider', region: 'Rhineland-Palatinate',
-    revenues: 12458, ebitda: 1433, ebit: 1311, ebitMargin: 10.52,
-    ev: 3918, earnOutPct: 35.00, fixedPrice: 2546, equityCash: 955,
-    ebitdaMultiple: 2.73, ebitMultiple: 2.99, irr: 60.60,
-    dealStatus: 'LOI sent', status: 'active', phase: 2, risk: 'medium',
-    start: '2025-05-01', end: '2026-02-01',
-    loiDate: '2025-10-15', ddStart: null, ddEnd: null,
-    signingDate: null, closingDate: null,
-    desc: 'Floor coating service provider in Rhineland-Palatinate. Largest revenue of active deals at €12.5M. Projected IRR 60.6%.',
-  },
-  // ── LOI PREPARATION ──
-  {
-    id: 7, name: 'MOTION', buyer: 'EterniTeam GmbH', target: 'Motion Vehicle Support GmbH',
-    sector: 'Technical Vehicle Support', region: 'Bavaria',
-    revenues: 3573, ebitda: 678, ebit: 717, ebitMargin: 20.08,
-    ev: 2046, earnOutPct: 30.00, fixedPrice: 1432, equityCash: 537,
-    ebitdaMultiple: 3.02, ebitMultiple: 2.85, irr: 58.06,
-    dealStatus: 'LOI preparation', status: 'active', phase: 2, risk: 'medium',
-    start: '2025-08-01', end: '2026-05-01',
-    loiDate: null, ddStart: null, ddEnd: null,
-    signingDate: null, closingDate: null,
-    desc: 'Technical vehicle support company in Bavaria. 30% earn-out structure. Projected IRR 58.06%.',
-  },
-  {
-    id: 8, name: 'TIMES SQUARE', buyer: 'EterniTeam GmbH', target: 'Times Square Elektro GmbH',
-    sector: 'Electrical installation services', region: 'Baden-Württemberg',
-    revenues: 2518, ebitda: 673, ebit: 594, ebitMargin: 23.61,
-    ev: 2151, earnOutPct: 35.00, fixedPrice: 1398, equityCash: 524,
-    ebitdaMultiple: 3.20, ebitMultiple: 3.62, irr: 46.62,
-    dealStatus: 'LOI preparation', status: 'active', phase: 2, risk: 'medium',
-    start: '2025-09-01', end: '2026-06-01',
-    loiDate: null, ddStart: null, ddEnd: null,
-    signingDate: null, closingDate: null,
-    desc: 'Electrical installation services in Baden-Württemberg. High EBIT margin of 23.61%. 35% earn-out component.',
-  },
-  // ── IO NEGOTIATION ──
-  {
-    id: 9, name: 'GUMMI', buyer: 'EterniTeam GmbH', target: 'Gummi Beschichtung GmbH',
-    sector: 'Floor coating service provider', region: 'Rhineland-Palatinate',
-    revenues: 6073, ebitda: 1043, ebit: 922, ebitMargin: 15.18,
-    ev: 3467, earnOutPct: 40.00, fixedPrice: 2080, equityCash: 780,
-    ebitdaMultiple: 3.33, ebitMultiple: 3.76, irr: 43.86,
-    dealStatus: 'IO negotiation', status: 'active', phase: 1, risk: 'medium',
-    start: '2025-09-01', end: '2026-08-01',
-    loiDate: null, ddStart: null, ddEnd: null,
-    signingDate: null, closingDate: null,
-    desc: 'Floor coating service provider in Rhineland-Palatinate. 40% earn-out structure. Projected IRR 43.86%.',
-  },
-  {
-    id: 10, name: 'ROSIN', buyer: 'EterniTeam GmbH', target: 'Rosin Küchentechnik GmbH',
-    sector: 'Commercial kitchen installer', region: 'North-Rhine Westfalia',
-    revenues: 4125, ebitda: 640, ebit: 619, ebitMargin: 15.00,
-    ev: 1838, earnOutPct: 39.00, fixedPrice: 1121, equityCash: 421,
-    ebitdaMultiple: 2.87, ebitMultiple: 2.97, irr: 50.12,
-    dealStatus: 'IO negotiation', status: 'active', phase: 1, risk: 'medium',
-    start: '2025-10-01', end: '2026-09-01',
-    loiDate: null, ddStart: null, ddEnd: null,
-    signingDate: null, closingDate: null,
-    desc: 'Commercial kitchen installer in NRW. 39% earn-out structure. Projected IRR 50.12%.',
-  },
-  {
-    id: 11, name: 'PRINTER', buyer: 'EterniTeam GmbH', target: 'Printer Print Services GmbH',
-    sector: 'Commercial print services', region: 'Hesse',
-    revenues: 2931, ebitda: 1227, ebit: 1151, ebitMargin: 39.26,
-    ev: 3009, earnOutPct: 99.00, fixedPrice: 30, equityCash: 11,
-    ebitdaMultiple: 2.45, ebitMultiple: 2.61, irr: null,
-    dealStatus: 'IO negotiation', status: 'active', phase: 1, risk: 'high',
-    start: '2025-10-01', end: '2026-09-01',
-    loiDate: null, ddStart: null, ddEnd: null,
-    signingDate: null, closingDate: null,
-    desc: 'Commercial print services in Hesse. Exceptional EBITDA margin of 39.26%. High earn-out component (99%) — IRR calculation pending.',
-  },
-  // ── IO SENT ──
-  {
-    id: 12, name: 'CANVAS', buyer: 'EterniTeam GmbH', target: 'Canvas Malerbetrieb GmbH',
-    sector: 'Painting services', region: '',
-    revenues: 3292, ebitda: 639, ebit: 588, ebitMargin: 16.73,
-    ev: 1980, earnOutPct: 35.00, fixedPrice: 1287, equityCash: 483,
-    ebitdaMultiple: 3.10, ebitMultiple: 3.37, irr: 46.37,
-    dealStatus: 'IO sent', status: 'active', phase: 1, risk: 'medium',
-    start: '2025-10-01', end: '2026-08-01',
-    loiDate: null, ddStart: null, ddEnd: null,
-    signingDate: null, closingDate: null,
-    desc: 'Painting services company. 35% earn-out structure. Projected IRR 46.37%.',
-  },
-  // ── IO IN PREPARATION ──
-  {
-    id: 13, name: 'FLOW', buyer: 'EterniTeam GmbH', target: 'Flow Absaugtechnik GmbH',
-    sector: 'Suction technology manufacturer', region: 'North-Rhine Westfalia',
-    revenues: 2248, ebitda: 527, ebit: 462, ebitMargin: 20.56,
-    ev: 1803, earnOutPct: 40.00, fixedPrice: 1082, equityCash: 406,
-    ebitdaMultiple: 3.42, ebitMultiple: 3.90, irr: 45.45,
-    dealStatus: 'IO in preparation', status: 'active', phase: 0, risk: 'medium',
-    start: '2025-11-01', end: '2026-09-01',
-    loiDate: null, ddStart: null, ddEnd: null,
-    signingDate: null, closingDate: null,
-    desc: 'Suction technology manufacturer in NRW. High EBIT margin of 20.56%. 40% earn-out component.',
-  },
-  {
-    id: 14, name: 'LISSABON', buyer: 'EterniTeam GmbH', target: 'Lissabon Wohnbau GmbH',
-    sector: 'Residential homebuilding services', region: 'Hesse',
-    revenues: 6963, ebitda: 1564, ebit: 1540, ebitMargin: 16.73,
-    ev: 4496, earnOutPct: 40.00, fixedPrice: 2698, equityCash: 1012,
-    ebitdaMultiple: 2.88, ebitMultiple: 2.92, irr: 65.29,
-    dealStatus: 'IO in preparation', status: 'active', phase: 0, risk: 'medium',
-    start: '2025-11-01', end: '2026-10-01',
-    loiDate: null, ddStart: null, ddEnd: null,
-    signingDate: null, closingDate: null,
-    desc: 'Residential homebuilding services in Hesse. Highest projected IRR in active pipeline at 65.29%. Largest EV of active deals at €4.496M.',
-  },
-  {
-    id: 15, name: 'SEGOVIA', buyer: 'EterniTeam GmbH', target: 'Segovia Metallbau GmbH',
-    sector: 'Hospitality metal fabrication', region: '',
-    revenues: 6133, ebitda: 1027, ebit: 948, ebitMargin: 15.46,
-    ev: 3148, earnOutPct: 40.00, fixedPrice: 966, equityCash: 362,
-    ebitdaMultiple: 3.07, ebitMultiple: 3.32, irr: 49.74,
-    dealStatus: 'IO in preparation', status: 'active', phase: 0, risk: 'medium',
-    start: '2025-12-01', end: '2026-11-01',
-    loiDate: null, ddStart: null, ddEnd: null,
-    signingDate: null, closingDate: null,
-    desc: 'Hospitality metal fabrication company. 40% earn-out structure. Projected IRR 49.74%.',
-  },
-];
-let nextId = 16;
+let projects = [];
+let nextId = 1;
 let selectedExport = 'pdf';
 let currentDetailId = null;
 
@@ -2517,32 +2330,6 @@ function openDetail(id) {
   const circ = 2 * Math.PI * 26;
   const dash = circ - (prog/100) * circ;
 
-  const phasesHtml = PHASES.map((ph, i) => {
-    let state = i < p.phase ? 'ph-done' : i === p.phase ? 'ph-current' : 'ph-future';
-    const isLast = i === PHASES.length - 1;
-    const tasksDone = i < p.phase ? ph.tasks.length : i === p.phase ? Math.ceil(ph.tasks.length*0.5) : 0;
-    const tasksHtml = ph.tasks.map((t,ti) => {
-      const d = ti < tasksDone;
-      return `<div class="task-item t-${d?'done':'pending'}"><div class="task-box">${d?'✓':''}</div><span class="task-lbl">${t}</span></div>`;
-    }).join('');
-    const phDate = interpDate(p.start, p.end || p.start, i/5);
-    return `<div class="vt-phase ${state}">
-      <div class="vt-col">
-        <div class="vt-node">${state === 'ph-done' ? '✓' : ph.icon}</div>
-        ${!isLast ? '<div class="vt-line" style="flex:1;min-height:60px;"></div>' : ''}
-      </div>
-      <div class="vt-content">
-        <div class="vt-header">
-          <div class="vt-title">Phase ${i+1} — ${ph.name}</div>
-          <div class="vt-date">${i <= p.phase ? fmtDate(phDate) : '—'}</div>
-        </div>
-        <div class="vt-card">
-          <div class="vt-desc">${ph.desc}</div>
-          <div>${tasksHtml}</div>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
 
   const risks = [
     { level: p.risk, label: 'Gesamtrisiko', desc: p.risk === 'low' ? 'Gut strukturiert, geringe Komplexität.' : p.risk === 'medium' ? 'Moderate Komplexität, Monitoring erforderlich.' : 'Hohe Komplexität, enge Steuerung nötig.' },
@@ -2568,12 +2355,8 @@ function openDetail(id) {
           <button class="btn btn-primary btn-sm" onclick="openEditModal(${p.id})">✎ Deal bearbeiten</button>
         </div>
       </div>
-      <div class="detail-layout">
-        <div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:16px;">Phasenverlauf</div>
-          ${phasesHtml}
-        </div>
-        <div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;max-width:960px;">
+        <div style="display:contents;">
           <div class="info-card">
             <div class="info-card-title">Fortschritt</div>
             <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
@@ -3200,7 +2983,7 @@ function interpDate(s, e, t) {
 }
 
 // ─── PERSISTENCE ───
-const DATA_VERSION = '2'; // Erhöhen wenn sich das Datenmodell ändert
+const DATA_VERSION = '3'; // Erhöhen wenn sich das Datenmodell ändert
 function save() {
   try {
     localStorage.setItem('eternitrack_projects', JSON.stringify(projects));
