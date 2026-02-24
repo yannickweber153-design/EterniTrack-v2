@@ -862,6 +862,8 @@ body {
 }
 .gd-pin-dd    .gd-pin-dot { background: #60a5fa; color: #60a5fa; }
 .gd-pin-dd    .gd-pin-label { color: #3b82f6; }
+.gd-pin-loi   .gd-pin-dot { background: #c084fc; color: #c084fc; }
+.gd-pin-loi   .gd-pin-label { color: #9333ea; }
 .gd-pin-sign  .gd-pin-dot { background: #fbbf24; color: #fbbf24; }
 .gd-pin-sign  .gd-pin-label { color: #d97706; }
 .gd-pin-close .gd-pin-dot { background: #4ade80; color: #4ade80; }
@@ -1772,7 +1774,8 @@ footer {
           </div>
           <div class="gantt-topbar-actions">
             <div class="gantt-legend">
-              <div class="gantt-legend-item"><div class="gl-pip gl-dd"></div>Due Diligence</div>
+              <div class="gantt-legend-item"><div class="gl-pip gl-dd"></div>DD</div>
+              <div class="gantt-legend-item"><div class="gl-pip" style="background:#c084fc;"></div>LOI</div>
               <div class="gantt-legend-item"><div class="gl-pip gl-signing"></div>Signing</div>
               <div class="gantt-legend-item"><div class="gl-pip gl-closing"></div>Closing</div>
               <div class="gantt-legend-item"><div class="gl-today-pip"></div>Heute</div>
@@ -1798,9 +1801,11 @@ footer {
         </div>
         <div class="gantt-topbar-actions">
           <div class="gantt-legend">
-            <div class="gantt-legend-item"><div class="gl-dot gl-signing"></div>Signing</div>
-            <div class="gantt-legend-item"><div class="gl-dot gl-closing"></div>Closing</div>
-            <div class="gantt-legend-item"><div class="gl-today"></div>Heute</div>
+            <div class="gantt-legend-item"><div class="gl-pip gl-dd"></div>DD</div>
+            <div class="gantt-legend-item"><div class="gl-pip" style="background:#c084fc;"></div>LOI</div>
+            <div class="gantt-legend-item"><div class="gl-pip gl-signing"></div>Signing</div>
+            <div class="gantt-legend-item"><div class="gl-pip gl-closing"></div>Closing</div>
+            <div class="gantt-legend-item"><div class="gl-today-pip"></div>Heute</div>
           </div>
           <button class="gantt-btn" onclick="openExportModal()">↗ Export</button>
           <button class="gantt-close-fs" onclick="closeGanttFullscreen()">✕ Schließen</button>
@@ -1842,95 +1847,8 @@ footer {
 </div>
 <!-- END MAIN WRAPPER -->
 
-<!-- ADD DEAL MODAL -->
-<div class="overlay" id="add-modal" onclick="closeModalOutside(event,'add-modal')">
-  <div class="modal-box">
-    <div class="modal-title">Neuen Deal anlegen</div>
-    <div class="modal-sub">Alle Felder mit * sind Pflichtfelder. Der Deal wird sofort für dein Team sichtbar.</div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Projektname *</label>
-        <input class="form-input" id="f-name" placeholder="z.B. Projekt Adler">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Branche / Sektor</label>
-        <select class="form-select" id="f-sector">
-          <option value="Industrie">Industrie</option>
-          <option value="Technologie">Technologie</option>
-          <option value="Gesundheitswesen">Gesundheitswesen</option>
-          <option value="Dienstleistungen">Dienstleistungen</option>
-          <option value="Handel">Handel</option>
-          <option value="Bau & Immobilien">Bau & Immobilien</option>
-          <option value="Logistik">Logistik</option>
-          <option value="Sonstiges">Sonstiges</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Käufer</label>
-        <input class="form-input" id="f-buyer" value="EterniTeam GmbH" readonly style="background:var(--bg2);color:var(--muted);cursor:not-allowed;">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Target-Unternehmen *</label>
-        <input class="form-input" id="f-target" placeholder="Zielunternehmen">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Startdatum *</label>
-        <input class="form-input" id="f-start" type="date">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Ziel-Closing *</label>
-        <input class="form-input" id="f-end" type="date">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Dealvolumen (Mio. €) *</label>
-        <input class="form-input" id="f-vol" type="number" placeholder="250">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Status *</label>
-        <select class="form-select" id="f-status">
-          <option value="active">Aktiv</option>
-          <option value="pending">Ausstehend</option>
-          <option value="closed">Abgeschlossen</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Aktuelle Phase</label>
-        <select class="form-select" id="f-phase">
-          <option value="0">Phase 1 — Vorbereitung & NDA</option>
-          <option value="1">Phase 2 — Due Diligence</option>
-          <option value="2">Phase 3 — Verhandlung & LOI</option>
-          <option value="3">Phase 4 — Signing</option>
-          <option value="4">Phase 5 — Regulatory</option>
-          <option value="5">Phase 6 — Closing</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Risikolevel</label>
-        <select class="form-select" id="f-risk">
-          <option value="low">Niedrig</option>
-          <option value="medium">Mittel</option>
-          <option value="high">Hoch</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Beschreibung / Dealnotiz</label>
-      <textarea class="form-textarea" id="f-desc" placeholder="Kurze Beschreibung des Deals, Besonderheiten, Prioritäten…"></textarea>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('add-modal')">Abbrechen</button>
-      <button class="btn btn-primary" onclick="addDeal()">Deal anlegen →</button>
-    </div>
-  </div>
-</div>
+<!-- ADD DEAL MODAL (content injected by openModal / resetAddModal) -->
+<div class="overlay" id="add-modal" onclick="closeModalOutside(event,'add-modal')"></div>
 
 <!-- EXPORT MODAL -->
 <div class="overlay" id="export-modal" onclick="closeModalOutside(event,'export-modal')">
@@ -2096,83 +2014,194 @@ const PHASES = [
 ];
 
 let projects = [
+  // ── CLOSED DEALS ──
   {
-    id: 1,
-    name: 'VEGANOVA',
-    buyer: 'EterniTeam GmbH',
-    target: 'Veganova GmbH',
-    sector: 'Lebensmittelhandel',
-    region: 'Bayern',
-    start: '2025-01-15',
-    end: '2025-08-12',
-    volume: 2.0,
-    ev: 2000,
-    ebitda: 174,
-    ebitdaMargin: 16.33,
-    evEbitda: 11.49,
-    moic: 2.68,
-    moicFull: 2.75,
-    irr: 56.94,
-    netDebt: 563,
-    equity: 1500,
-    status: 'closed',
-    phase: 5,
-    risk: 'low',
-    desc: 'Groß- und Einzelhändler für Obst & Gemüse in Bayern. Stabiles B2B-Geschäftsmodell mit langjährigen Kundenbeziehungen. IRR 56,94% — erstes Portfolio-Unternehmen von EterniTeam.',
-    closedDate: '2025-08-12',
+    id: 1, name: 'VEGANOVA', buyer: 'EterniTeam GmbH', target: 'Veganova GmbH',
+    sector: 'Fruit & vegetable wholeseller', region: 'Bavaria',
+    revenues: 4451, ebitda: 745, ebit: 727, ebitMargin: 16.33,
+    ev: 2000, earnOutPct: null, fixedPrice: null, equityCash: null,
+    ebitdaMultiple: 2.68, ebitMultiple: 2.75, irr: 56.94,
+    dealStatus: 'Deal closed', status: 'closed', phase: 5, risk: 'low',
+    start: '2025-01-15', end: '2025-08-12',
+    loiDate: '2025-03-20', ddStart: '2025-04-01', ddEnd: '2025-06-15',
+    signingDate: '2025-07-10', closingDate: '2025-08-12',
+    desc: 'Fruit & vegetable wholeseller in Bavaria. Stable B2B business model with long-standing customer relationships. IRR 56.94% — first EterniTeam portfolio company.',
   },
   {
-    id: 2,
-    name: 'AQUA',
-    buyer: 'EterniTeam GmbH',
-    target: 'Aqua Sanitär GmbH',
-    sector: 'Handwerk / SHK',
-    region: 'Nordrhein-Westfalen',
-    start: '2025-02-01',
-    end: '2025-08-28',
-    volume: 2.197,
-    ev: 2197,
-    ebitda: 650,
-    ebitdaMargin: 19.66,
-    evEbitda: 3.38,
-    moic: 3.08,
-    moicFull: 3.38,
-    irr: 51.21,
-    netDebt: 618,
-    equity: 1648,
-    status: 'closed',
-    phase: 5,
-    risk: 'low',
-    desc: 'Sanitärinstallationsbetrieb in NRW mit starker regionaler Marktstellung. Hohe EBITDA-Marge von 19,66%. Zweiter Buyout — IRR 51,21%.',
-    closedDate: '2025-08-28',
+    id: 2, name: 'AQUA', buyer: 'EterniTeam GmbH', target: 'Aqua Sanitär GmbH',
+    sector: 'Craft Business – Sanitary Installation', region: 'North-Rhine Westfalia',
+    revenues: 3306, ebitda: 714, ebit: 650, ebitMargin: 19.66,
+    ev: 2197, earnOutPct: null, fixedPrice: null, equityCash: null,
+    ebitdaMultiple: 3.08, ebitMultiple: 3.38, irr: 51.21,
+    dealStatus: 'Deal closed', status: 'closed', phase: 5, risk: 'low',
+    start: '2025-02-01', end: '2025-08-28',
+    loiDate: '2025-04-15', ddStart: '2025-05-01', ddEnd: '2025-07-01',
+    signingDate: '2025-08-01', closingDate: '2025-08-28',
+    desc: 'Sanitary installation company in NRW with strong regional market position. High EBITDA margin of 19.66%. Second buyout — IRR 51.21%.',
   },
   {
-    id: 3,
-    name: 'HODOR',
-    buyer: 'EterniTeam GmbH',
-    target: 'Hodor Fenster & Türen GmbH',
-    sector: 'Handwerk / Bau',
-    region: 'Berlin',
-    start: '2025-01-20',
-    end: '2025-07-15',
-    volume: 2.855,
-    ev: 2855,
-    ebitda: 696,
-    ebitdaMargin: 16.59,
-    evEbitda: 4.10,
-    moic: 3.72,
-    moicFull: 4.10,
-    irr: 35.77,
-    netDebt: 749,
-    equity: 1999,
-    status: 'closed',
-    phase: 5,
-    risk: 'low',
-    desc: 'Fenster- und Türeninstallateur in Berlin. Größtes der drei Q3-Deals mit EV €2,855M. Dritter Buyout — IRR 35,77%.',
-    closedDate: '2025-07-15',
+    id: 3, name: 'HODOR', buyer: 'EterniTeam GmbH', target: 'Hodor Fenster & Türen GmbH',
+    sector: 'Window and Door Installer', region: 'Berlin',
+    revenues: 4195, ebitda: 768, ebit: 696, ebitMargin: 16.59,
+    ev: 2855, earnOutPct: null, fixedPrice: null, equityCash: null,
+    ebitdaMultiple: 3.72, ebitMultiple: 4.10, irr: 35.77,
+    dealStatus: 'Deal closed', status: 'closed', phase: 5, risk: 'low',
+    start: '2025-01-20', end: '2025-07-15',
+    loiDate: '2025-03-10', ddStart: '2025-03-25', ddEnd: '2025-05-30',
+    signingDate: '2025-06-20', closingDate: '2025-07-15',
+    desc: 'Window and door installer in Berlin. Largest of the three Q3 deals with EV €2.855M. Third buyout — IRR 35.77%.',
+  },
+  // ── LOI SENT ──
+  {
+    id: 4, name: 'TO GO', buyer: 'EterniTeam GmbH', target: 'To Go Packaging GmbH',
+    sector: 'Integrated packaging solutions provider', region: 'Hesse',
+    revenues: 7200, ebitda: 979, ebit: 966, ebitMargin: 13.42,
+    ev: 3005, earnOutPct: 33.33, fixedPrice: 2003, equityCash: 751,
+    ebitdaMultiple: 3.07, ebitMultiple: 3.11, irr: 48.63,
+    dealStatus: 'LOI sent', status: 'active', phase: 2, risk: 'medium',
+    start: '2025-06-01', end: '2026-03-01',
+    loiDate: '2025-11-15', ddStart: null, ddEnd: null,
+    signingDate: null, closingDate: null,
+    desc: 'Integrated packaging solutions provider in Hesse. Strong revenue base of €7.2M with 33.33% earn-out structure.',
+  },
+  {
+    id: 5, name: 'METRO', buyer: 'EterniTeam GmbH', target: 'Metro Metallbau GmbH',
+    sector: 'Specialized metal construction', region: 'Berlin',
+    revenues: 2854, ebitda: 709, ebit: 653, ebitMargin: 22.89,
+    ev: 2415, earnOutPct: 35.00, fixedPrice: 1570, equityCash: 589,
+    ebitdaMultiple: 3.41, ebitMultiple: 3.70, irr: 45.35,
+    dealStatus: 'LOI sent', status: 'active', phase: 2, risk: 'medium',
+    start: '2025-07-01', end: '2026-04-01',
+    loiDate: '2025-12-01', ddStart: null, ddEnd: null,
+    signingDate: null, closingDate: null,
+    desc: 'Specialized metal construction company in Berlin. High EBIT margin of 22.89%. 35% earn-out component.',
+  },
+  {
+    id: 6, name: 'FLOOR', buyer: 'EterniTeam GmbH', target: 'Floor Coating GmbH',
+    sector: 'Floor coating service provider', region: 'Rhineland-Palatinate',
+    revenues: 12458, ebitda: 1433, ebit: 1311, ebitMargin: 10.52,
+    ev: 3918, earnOutPct: 35.00, fixedPrice: 2546, equityCash: 955,
+    ebitdaMultiple: 2.73, ebitMultiple: 2.99, irr: 60.60,
+    dealStatus: 'LOI sent', status: 'active', phase: 2, risk: 'medium',
+    start: '2025-05-01', end: '2026-02-01',
+    loiDate: '2025-10-15', ddStart: null, ddEnd: null,
+    signingDate: null, closingDate: null,
+    desc: 'Floor coating service provider in Rhineland-Palatinate. Largest revenue of active deals at €12.5M. Projected IRR 60.6%.',
+  },
+  // ── LOI PREPARATION ──
+  {
+    id: 7, name: 'MOTION', buyer: 'EterniTeam GmbH', target: 'Motion Vehicle Support GmbH',
+    sector: 'Technical Vehicle Support', region: 'Bavaria',
+    revenues: 3573, ebitda: 678, ebit: 717, ebitMargin: 20.08,
+    ev: 2046, earnOutPct: 30.00, fixedPrice: 1432, equityCash: 537,
+    ebitdaMultiple: 3.02, ebitMultiple: 2.85, irr: 58.06,
+    dealStatus: 'LOI preparation', status: 'active', phase: 2, risk: 'medium',
+    start: '2025-08-01', end: '2026-05-01',
+    loiDate: null, ddStart: null, ddEnd: null,
+    signingDate: null, closingDate: null,
+    desc: 'Technical vehicle support company in Bavaria. 30% earn-out structure. Projected IRR 58.06%.',
+  },
+  {
+    id: 8, name: 'TIMES SQUARE', buyer: 'EterniTeam GmbH', target: 'Times Square Elektro GmbH',
+    sector: 'Electrical installation services', region: 'Baden-Württemberg',
+    revenues: 2518, ebitda: 673, ebit: 594, ebitMargin: 23.61,
+    ev: 2151, earnOutPct: 35.00, fixedPrice: 1398, equityCash: 524,
+    ebitdaMultiple: 3.20, ebitMultiple: 3.62, irr: 46.62,
+    dealStatus: 'LOI preparation', status: 'active', phase: 2, risk: 'medium',
+    start: '2025-09-01', end: '2026-06-01',
+    loiDate: null, ddStart: null, ddEnd: null,
+    signingDate: null, closingDate: null,
+    desc: 'Electrical installation services in Baden-Württemberg. High EBIT margin of 23.61%. 35% earn-out component.',
+  },
+  // ── IO NEGOTIATION ──
+  {
+    id: 9, name: 'GUMMI', buyer: 'EterniTeam GmbH', target: 'Gummi Beschichtung GmbH',
+    sector: 'Floor coating service provider', region: 'Rhineland-Palatinate',
+    revenues: 6073, ebitda: 1043, ebit: 922, ebitMargin: 15.18,
+    ev: 3467, earnOutPct: 40.00, fixedPrice: 2080, equityCash: 780,
+    ebitdaMultiple: 3.33, ebitMultiple: 3.76, irr: 43.86,
+    dealStatus: 'IO negotiation', status: 'active', phase: 1, risk: 'medium',
+    start: '2025-09-01', end: '2026-08-01',
+    loiDate: null, ddStart: null, ddEnd: null,
+    signingDate: null, closingDate: null,
+    desc: 'Floor coating service provider in Rhineland-Palatinate. 40% earn-out structure. Projected IRR 43.86%.',
+  },
+  {
+    id: 10, name: 'ROSIN', buyer: 'EterniTeam GmbH', target: 'Rosin Küchentechnik GmbH',
+    sector: 'Commercial kitchen installer', region: 'North-Rhine Westfalia',
+    revenues: 4125, ebitda: 640, ebit: 619, ebitMargin: 15.00,
+    ev: 1838, earnOutPct: 39.00, fixedPrice: 1121, equityCash: 421,
+    ebitdaMultiple: 2.87, ebitMultiple: 2.97, irr: 50.12,
+    dealStatus: 'IO negotiation', status: 'active', phase: 1, risk: 'medium',
+    start: '2025-10-01', end: '2026-09-01',
+    loiDate: null, ddStart: null, ddEnd: null,
+    signingDate: null, closingDate: null,
+    desc: 'Commercial kitchen installer in NRW. 39% earn-out structure. Projected IRR 50.12%.',
+  },
+  {
+    id: 11, name: 'PRINTER', buyer: 'EterniTeam GmbH', target: 'Printer Print Services GmbH',
+    sector: 'Commercial print services', region: 'Hesse',
+    revenues: 2931, ebitda: 1227, ebit: 1151, ebitMargin: 39.26,
+    ev: 3009, earnOutPct: 99.00, fixedPrice: 30, equityCash: 11,
+    ebitdaMultiple: 2.45, ebitMultiple: 2.61, irr: null,
+    dealStatus: 'IO negotiation', status: 'active', phase: 1, risk: 'high',
+    start: '2025-10-01', end: '2026-09-01',
+    loiDate: null, ddStart: null, ddEnd: null,
+    signingDate: null, closingDate: null,
+    desc: 'Commercial print services in Hesse. Exceptional EBITDA margin of 39.26%. High earn-out component (99%) — IRR calculation pending.',
+  },
+  // ── IO SENT ──
+  {
+    id: 12, name: 'CANVAS', buyer: 'EterniTeam GmbH', target: 'Canvas Malerbetrieb GmbH',
+    sector: 'Painting services', region: '',
+    revenues: 3292, ebitda: 639, ebit: 588, ebitMargin: 16.73,
+    ev: 1980, earnOutPct: 35.00, fixedPrice: 1287, equityCash: 483,
+    ebitdaMultiple: 3.10, ebitMultiple: 3.37, irr: 46.37,
+    dealStatus: 'IO sent', status: 'active', phase: 1, risk: 'medium',
+    start: '2025-10-01', end: '2026-08-01',
+    loiDate: null, ddStart: null, ddEnd: null,
+    signingDate: null, closingDate: null,
+    desc: 'Painting services company. 35% earn-out structure. Projected IRR 46.37%.',
+  },
+  // ── IO IN PREPARATION ──
+  {
+    id: 13, name: 'FLOW', buyer: 'EterniTeam GmbH', target: 'Flow Absaugtechnik GmbH',
+    sector: 'Suction technology manufacturer', region: 'North-Rhine Westfalia',
+    revenues: 2248, ebitda: 527, ebit: 462, ebitMargin: 20.56,
+    ev: 1803, earnOutPct: 40.00, fixedPrice: 1082, equityCash: 406,
+    ebitdaMultiple: 3.42, ebitMultiple: 3.90, irr: 45.45,
+    dealStatus: 'IO in preparation', status: 'active', phase: 0, risk: 'medium',
+    start: '2025-11-01', end: '2026-09-01',
+    loiDate: null, ddStart: null, ddEnd: null,
+    signingDate: null, closingDate: null,
+    desc: 'Suction technology manufacturer in NRW. High EBIT margin of 20.56%. 40% earn-out component.',
+  },
+  {
+    id: 14, name: 'LISSABON', buyer: 'EterniTeam GmbH', target: 'Lissabon Wohnbau GmbH',
+    sector: 'Residential homebuilding services', region: 'Hesse',
+    revenues: 6963, ebitda: 1564, ebit: 1540, ebitMargin: 16.73,
+    ev: 4496, earnOutPct: 40.00, fixedPrice: 2698, equityCash: 1012,
+    ebitdaMultiple: 2.88, ebitMultiple: 2.92, irr: 65.29,
+    dealStatus: 'IO in preparation', status: 'active', phase: 0, risk: 'medium',
+    start: '2025-11-01', end: '2026-10-01',
+    loiDate: null, ddStart: null, ddEnd: null,
+    signingDate: null, closingDate: null,
+    desc: 'Residential homebuilding services in Hesse. Highest projected IRR in active pipeline at 65.29%. Largest EV of active deals at €4.496M.',
+  },
+  {
+    id: 15, name: 'SEGOVIA', buyer: 'EterniTeam GmbH', target: 'Segovia Metallbau GmbH',
+    sector: 'Hospitality metal fabrication', region: '',
+    revenues: 6133, ebitda: 1027, ebit: 948, ebitMargin: 15.46,
+    ev: 3148, earnOutPct: 40.00, fixedPrice: 966, equityCash: 362,
+    ebitdaMultiple: 3.07, ebitMultiple: 3.32, irr: 49.74,
+    dealStatus: 'IO in preparation', status: 'active', phase: 0, risk: 'medium',
+    start: '2025-12-01', end: '2026-11-01',
+    loiDate: null, ddStart: null, ddEnd: null,
+    signingDate: null, closingDate: null,
+    desc: 'Hospitality metal fabrication company. 40% earn-out structure. Projected IRR 49.74%.',
   },
 ];
-let nextId = 4;
+let nextId = 16;
 let selectedExport = 'pdf';
 let currentDetailId = null;
 
@@ -2238,23 +2267,17 @@ function makeCard(p, compact = false) {
   const isClosed = p.status === 'closed';
   const closedDate = p.closedDate ? fmtDate(p.closedDate) : fmtDate(p.end);
 
-  // Financial metrics block — show real data if available, fallback to phase progress
-  const financialsHtml = isClosed && p.irr ? `
-    <div class="card-metrics" style="grid-template-columns:repeat(4,1fr);">
-      <div class="metric"><div class="metric-label">EV</div><div class="metric-val">€${p.ev ? (p.ev/1000).toFixed(2)+'M' : '—'}</div></div>
-      <div class="metric"><div class="metric-label">EBITDA</div><div class="metric-val">€${p.ebitda || '—'}k</div></div>
-      <div class="metric"><div class="metric-label">IRR</div><div class="metric-val gold">${p.irr ? p.irr.toFixed(2)+'%' : '—'}</div></div>
-      <div class="metric"><div class="metric-label">MOIC</div><div class="metric-val gold">${p.moicFull ? p.moicFull.toFixed(2)+'x' : '—'}</div></div>
+  // Financial metrics block
+  const financialsHtml = `
+    <div class="card-metrics" style="grid-template-columns:repeat(3,1fr);">
+      <div class="metric"><div class="metric-label">EV</div><div class="metric-val gold">€${p.ev ? (p.ev/1000).toFixed(2)+'M' : '—'}</div></div>
+      <div class="metric"><div class="metric-label">EBITDA</div><div class="metric-val">€${p.ebitda ? (p.ebitda/1000).toFixed(2)+'M' : '—'}</div></div>
+      <div class="metric"><div class="metric-label">IRR</div><div class="metric-val gold">${p.irr != null ? p.irr.toFixed(2)+'%' : '#NUM!'}</div></div>
     </div>
     <div class="card-metrics" style="grid-template-columns:repeat(3,1fr);margin-top:8px;">
-      <div class="metric"><div class="metric-label">EV/EBITDA</div><div class="metric-val">${p.evEbitda ? p.evEbitda.toFixed(1)+'x' : '—'}</div></div>
-      <div class="metric"><div class="metric-label">Equity</div><div class="metric-val">€${p.equity || '—'}k</div></div>
-      <div class="metric"><div class="metric-label">Closing</div><div class="metric-val">${closedDate}</div></div>
-    </div>` : `
-    <div class="card-metrics">
-      <div class="metric"><div class="metric-label">EV</div><div class="metric-val gold">€${p.ev ? (p.ev/1000).toFixed(2)+'M' : p.volume+'M'}</div></div>
-      <div class="metric"><div class="metric-label">Closing</div><div class="metric-val">${fmtDate(p.end)}</div></div>
-      <div class="metric"><div class="metric-label">Phase</div><div class="metric-val">${p.phase+1} / 6</div></div>
+      <div class="metric"><div class="metric-label">EBITDA Multiple</div><div class="metric-val">${p.ebitdaMultiple ? p.ebitdaMultiple.toFixed(2)+'x' : '—'}</div></div>
+      <div class="metric"><div class="metric-label">EBIT Multiple</div><div class="metric-val">${p.ebitMultiple ? p.ebitMultiple.toFixed(2)+'x' : '—'}</div></div>
+      <div class="metric"><div class="metric-label">EBIT Margin</div><div class="metric-val">${p.ebitMargin ? p.ebitMargin.toFixed(2)+'%' : '—'}</div></div>
     </div>`;
 
   return `
@@ -2262,38 +2285,39 @@ function makeCard(p, compact = false) {
     <div class="card-header">
       <div style="display:flex;align-items:center;gap:8px;">
         <div class="deal-badge badge-buyout">BUYOUT</div>
-        <span style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;">${p.region || p.sector || ''}</span>
+        <span style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;">${p.region || ''}</span>
       </div>
       <div class="status-pill s-${p.status}">
         <div class="status-dot"></div>
-        <span>${statusLabel}</span>
+        <span>${p.dealStatus || statusLabel}</span>
       </div>
     </div>
     <div class="card-name">${p.name}</div>
     <div class="card-parties"><strong>EterniTeam GmbH</strong> <span style="color:var(--muted2)">→</span> <strong>${p.target}</strong></div>
     <div style="font-size:11px;color:var(--muted);margin-top:-10px;margin-bottom:16px;font-family:'DM Mono',monospace;">${p.sector || ''}</div>
     ${financialsHtml}
-    ${isClosed ? `
     <div style="margin-top:14px;display:flex;gap:6px;">
       <div style="flex:1;background:var(--gold-bg);border-radius:8px;padding:8px 10px;text-align:center;">
         <div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--green);font-family:'DM Mono',monospace;margin-bottom:2px;">IRR</div>
-        <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--navy);">${p.irr?.toFixed(2)}%</div>
+        <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--navy);">${p.irr != null ? p.irr.toFixed(2)+'%' : '#NUM!'}</div>
       </div>
       <div style="flex:1;background:var(--navy-light);border-radius:8px;padding:8px 10px;text-align:center;">
-        <div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--navy);font-family:'DM Mono',monospace;opacity:0.6;margin-bottom:2px;">MOIC</div>
-        <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--navy);">${p.moicFull?.toFixed(2)}x</div>
+        <div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--navy);font-family:'DM Mono',monospace;opacity:0.6;margin-bottom:2px;">EBITDA</div>
+        <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--navy);">${p.ebitdaMultiple?.toFixed(2) || '—'}x</div>
       </div>
       <div style="flex:1;background:var(--bg2);border-radius:8px;padding:8px 10px;text-align:center;">
-        <div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:2px;">EV/EBITDA</div>
-        <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--ink);">${p.evEbitda?.toFixed(1)}x</div>
+        <div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:2px;">EBIT</div>
+        <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--ink);">${p.ebitMultiple?.toFixed(2) || '—'}x</div>
       </div>
-    </div>` : `
-    <div class="card-progress-label" style="margin-top:14px;">
+    </div>
+    ${!isClosed ? `
+    <div class="card-progress-label" style="margin-top:12px;">
       <span><strong>${PHASES[p.phase].name}</strong></span>
       <span>${prog}%</span>
     </div>
     <div class="progress-track"><div class="progress-fill" style="width:${prog}%"></div></div>
-    <div class="phase-dots">${dots}</div>`}
+    <div class="phase-dots">${dots}</div>` : `
+    <div style="margin-top:8px;font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);text-align:right;">Closed ${p.closingDate ? fmtDate(p.closingDate) : ''}</div>`}
   </div>`;
 }
 
@@ -2390,71 +2414,50 @@ function renderGanttCanvas() {
       const barW = Math.max(4, px(p.end) - barX);
       const colorCls = dealColors[idx % dealColors.length];
 
-      // Phase timing inside bar
+      // Use actual dates if set, otherwise estimate from phase proportions
       const phasePcts = [0, 0.15, 0.40, 0.60, 0.75, 0.90, 1.0];
-      const ddStartD = new Date(pStart.getTime() + phasePcts[1] * totalMs_deal);
-      const ddEndD   = new Date(pStart.getTime() + phasePcts[2] * totalMs_deal);
-      const signingD = p.signingDate ? new Date(p.signingDate) : new Date(pStart.getTime() + phasePcts[3] * totalMs_deal);
-      const closingD = p.closedDate  ? new Date(p.closedDate)  : pEnd;
+      const ddStartD = p.ddStart ? new Date(p.ddStart) : new Date(pStart.getTime() + phasePcts[1] * totalMs_deal);
+      const ddEndD   = p.ddEnd   ? new Date(p.ddEnd)   : new Date(pStart.getTime() + phasePcts[2] * totalMs_deal);
+      const loiD     = p.loiDate     ? new Date(p.loiDate)     : null;
+      const signingD = p.signingDate ? new Date(p.signingDate) : null;
+      const closingD = p.closingDate ? new Date(p.closingDate) : (p.status === 'closed' ? pEnd : null);
 
-      // DD stripe relative to bar
+      // DD stripe relative to bar (only show if DD dates known or phase > 0)
       const ddRelLeft  = (ddStartD - pStart) / totalMs_deal * 100;
-      const ddRelWidth = (ddEndD - ddStartD)  / totalMs_deal * 100;
-
-      // Pin positions (absolute in track)
+      const ddRelWidth = (ddEndD - ddStartD) / totalMs_deal * 100;
       const ddMidPx    = px(new Date((ddStartD.getTime() + ddEndD.getTime()) / 2));
-      const signingPx  = px(signingD);
-      const closingPx  = px(closingD);
 
       const diffM = (pEnd.getFullYear()-pStart.getFullYear())*12 + pEnd.getMonth()-pStart.getMonth();
 
+      const fmtOpt = d => d ? fmtDate(d) : '—';
       const tooltip = `
         <div class="gd-tooltip">
           <div class="gd-tt-name">${p.name}</div>
-          <div class="gd-tt-co">${p.target} · ${p.region||''}</div>
-          ${p.irr ? `
-          <div class="gd-tt-row"><span class="gd-tt-k">IRR</span><span class="gd-tt-v g">${p.irr.toFixed(2)}%</span></div>
-          <div class="gd-tt-row"><span class="gd-tt-k">MOIC</span><span class="gd-tt-v g">${p.moicFull?.toFixed(2)}x</span></div>
+          <div class="gd-tt-co">${p.target}${p.region ? ' · ' + p.region : ''}</div>
+          <div class="gd-tt-row"><span class="gd-tt-k">IRR</span><span class="gd-tt-v g">${p.irr ? p.irr.toFixed(2)+'%' : '—'}</span></div>
           <div class="gd-tt-row"><span class="gd-tt-k">EV</span><span class="gd-tt-v">€${p.ev?(p.ev/1000).toFixed(3):'-'}M</span></div>
-          <div class="gd-tt-row"><span class="gd-tt-k">EBITDA-Marge</span><span class="gd-tt-v">${p.ebitdaMargin?.toFixed(1)}%</span></div>
-          ` : ''}
-          <div class="gd-tt-row"><span class="gd-tt-k">Start</span><span class="gd-tt-v">${fmtDate(p.start)}</span></div>
-          <div class="gd-tt-row"><span class="gd-tt-k">Signing</span><span class="gd-tt-v">${fmtDate(signingD)}</span></div>
-          <div class="gd-tt-row"><span class="gd-tt-k">Closing</span><span class="gd-tt-v">${fmtDate(closingD)}</span></div>
-          <div class="gd-tt-row"><span class="gd-tt-k">Dauer</span><span class="gd-tt-v">${diffM} Mo.</span></div>
+          <div class="gd-tt-row"><span class="gd-tt-k">EBITDA Multiple</span><span class="gd-tt-v">${p.ebitdaMultiple?.toFixed(2) || '—'}x</span></div>
+          <div class="gd-tt-row"><span class="gd-tt-k">Status</span><span class="gd-tt-v">${p.dealStatus || '—'}</span></div>
+          <div class="gd-tt-row"><span class="gd-tt-k">DD</span><span class="gd-tt-v">${p.ddStart ? fmtDateShort(ddStartD)+' – '+fmtDateShort(ddEndD) : 'noch offen'}</span></div>
+          <div class="gd-tt-row"><span class="gd-tt-k">LOI</span><span class="gd-tt-v">${fmtOpt(loiD)}</span></div>
+          <div class="gd-tt-row"><span class="gd-tt-k">Signing</span><span class="gd-tt-v">${fmtOpt(signingD)}</span></div>
+          <div class="gd-tt-row"><span class="gd-tt-k">Closing</span><span class="gd-tt-v">${fmtOpt(closingD)}</span></div>
+          <div class="gd-tt-row"><span class="gd-tt-k">Laufzeit</span><span class="gd-tt-v">${diffM} Mo.</span></div>
         </div>`;
+
+      const loiPin    = loiD    ? `<div class="gd-pin gd-pin-loi" style="left:${px(loiD)}px;top:8px;"><div class="gd-pin-dot"></div><div class="gd-pin-line"></div><div class="gd-pin-label">LOI ${fmtDateShort(loiD)}</div></div>` : '';
+      const sigPin    = signingD ? `<div class="gd-pin gd-pin-sign" style="left:${px(signingD)}px;top:8px;"><div class="gd-pin-dot"></div><div class="gd-pin-line"></div><div class="gd-pin-label">${fmtDateShort(signingD)}</div></div>` : '';
+      const closePin  = closingD ? `<div class="gd-pin gd-pin-close" style="left:${px(closingD)}px;top:8px;"><div class="gd-pin-dot"></div><div class="gd-pin-line"></div><div class="gd-pin-label">${fmtDateShort(closingD)}</div></div>` : '';
+      const ddPin     = (p.ddStart || p.phase >= 1) ? `<div class="gd-pin gd-pin-dd" style="left:${ddMidPx}px;top:8px;"><div class="gd-pin-dot"></div><div class="gd-pin-line"></div><div class="gd-pin-label">DD</div></div>` : '';
 
       return `
       <div class="gantt-track-row">
-        <!-- BAR -->
         <div class="gd-bar ${colorCls}" style="left:${barX}px;width:${barW}px;" onclick="openDetail(${p.id})">
           <div class="gd-dd-stripe" style="left:${ddRelLeft}%;width:${ddRelWidth}%;"></div>
-          <div class="gd-bar-body">
-            <span class="gd-bar-label">${p.name}</span>
-          </div>
+          <div class="gd-bar-body"><span class="gd-bar-label">${p.name}</span></div>
           ${tooltip}
         </div>
-
-        <!-- DD PIN -->
-        <div class="gd-pin gd-pin-dd" style="left:${ddMidPx}px;top:8px;">
-          <div class="gd-pin-dot"></div>
-          <div class="gd-pin-line"></div>
-          <div class="gd-pin-label">DD</div>
-        </div>
-
-        <!-- SIGNING PIN -->
-        <div class="gd-pin gd-pin-sign" style="left:${signingPx}px;top:8px;">
-          <div class="gd-pin-dot"></div>
-          <div class="gd-pin-line"></div>
-          <div class="gd-pin-label">${fmtDateShort(signingD)}</div>
-        </div>
-
-        <!-- CLOSING PIN -->
-        <div class="gd-pin gd-pin-close" style="left:${closingPx}px;top:8px;">
-          <div class="gd-pin-dot"></div>
-          <div class="gd-pin-line"></div>
-          <div class="gd-pin-label">${fmtDateShort(closingD)}</div>
-        </div>
+        ${ddPin}${loiPin}${sigPin}${closePin}
       </div>`;
     }).join('');
 
@@ -2630,28 +2633,42 @@ function openDetail(id) {
             </div>
           </div>
           <div class="info-card">
-            <div class="info-card-title">Deal-Details</div>
-            <div class="detail-row"><span class="dr-label">Volumen</span><span class="dr-val gold">€${p.volume}M</span></div>
-            <div class="detail-row"><span class="dr-label">Typ</span><span class="dr-val">Buyout</span></div>
-            <div class="detail-row"><span class="dr-label">Status</span><span class="dr-val">${{active:'🟢 Aktiv',closed:'⚫ Closed',pending:'🟡 Ausstehend'}[p.status]}</span></div>
-            <div class="detail-row"><span class="dr-label">Start</span><span class="dr-val">${fmtDate(p.start)}</span></div>
-            <div class="detail-row"><span class="dr-label">Closing</span><span class="dr-val">${fmtDate(p.end)}</span></div>
-            <div class="detail-row"><span class="dr-label">Käufer</span><span class="dr-val">EterniTeam GmbH</span></div>
-            <div class="detail-row"><span class="dr-label">Sektor</span><span class="dr-val">${p.sector || '—'}</span></div>
-            <div class="detail-row"><span class="dr-label">Region</span><span class="dr-val">${p.region || '—'}</span></div>
-            ${p.irr ? `
-            <div class="detail-row"><span class="dr-label">EV</span><span class="dr-val gold">€${(p.ev/1000).toFixed(3)}M</span></div>
-            <div class="detail-row"><span class="dr-label">EBITDA</span><span class="dr-val">€${p.ebitda}k (${p.ebitdaMargin?.toFixed(2)}%)</span></div>
-            <div class="detail-row"><span class="dr-label">EV/EBITDA</span><span class="dr-val">${p.evEbitda?.toFixed(2)}x</span></div>
-            <div class="detail-row"><span class="dr-label">Equity</span><span class="dr-val">€${p.equity}k</span></div>
-            <div class="detail-row"><span class="dr-label">Net Debt</span><span class="dr-val">€${p.netDebt}k</span></div>
-            <div class="detail-row"><span class="dr-label">IRR</span><span class="dr-val" style="color:var(--green);font-family:'DM Mono',monospace;font-size:15px;">${p.irr?.toFixed(2)}%</span></div>
-            <div class="detail-row"><span class="dr-label">MOIC</span><span class="dr-val gold">${p.moicFull?.toFixed(2)}x</span></div>
-            <div class="detail-row"><span class="dr-label">Closed</span><span class="dr-val">${p.closedDate ? fmtDate(p.closedDate) : '—'}</span></div>
-            ` : ''}
-            <div class="detail-row"><span class="dr-label">Target</span><span class="dr-val">${p.target}</span></div>
-            ${p.desc ? `<div style="margin-top:12px;padding:12px;background:var(--bg);border-radius:8px;font-size:12.5px;color:var(--muted);line-height:1.5;">${p.desc}</div>` : ''}
+            <div class="info-card-title">Pipeline Status</div>
+            <div style="display:inline-flex;align-items:center;gap:8px;background:var(--navy-light);border-radius:8px;padding:8px 14px;margin-bottom:4px;">
+              <div style="width:8px;height:8px;border-radius:50%;background:${p.status==='closed'?'var(--green)':'var(--gold)'};"></div>
+              <span style="font-weight:700;font-size:13px;color:var(--navy);">${p.dealStatus || (p.status==='closed'?'Deal closed':'Active')}</span>
+            </div>
+            <div style="margin-top:10px;">
+              <div class="detail-row"><span class="dr-label">Sektor</span><span class="dr-val">${p.sector || '—'}</span></div>
+              <div class="detail-row"><span class="dr-label">Region</span><span class="dr-val">${p.region || '—'}</span></div>
+              <div class="detail-row"><span class="dr-label">Käufer</span><span class="dr-val">EterniTeam GmbH</span></div>
+              <div class="detail-row"><span class="dr-label">Target</span><span class="dr-val">${p.target}</span></div>
+            </div>
           </div>
+          <div class="info-card">
+            <div class="info-card-title">Finanzkennzahlen (Tsd. €)</div>
+            <div class="detail-row"><span class="dr-label">Revenues</span><span class="dr-val">€${(p.revenues||0).toLocaleString('de-DE')}k</span></div>
+            <div class="detail-row"><span class="dr-label">EBITDA</span><span class="dr-val">€${(p.ebitda||0).toLocaleString('de-DE')}k</span></div>
+            <div class="detail-row"><span class="dr-label">EBIT</span><span class="dr-val">€${(p.ebit||0).toLocaleString('de-DE')}k</span></div>
+            <div class="detail-row"><span class="dr-label">EBIT Margin</span><span class="dr-val">${p.ebitMargin?.toFixed(2) || '—'}%</span></div>
+            <div class="detail-row"><span class="dr-label">EV</span><span class="dr-val gold" style="font-size:15px;">€${(p.ev||0).toLocaleString('de-DE')}k</span></div>
+            ${p.earnOutPct != null ? `<div class="detail-row"><span class="dr-label">Earn-Out %</span><span class="dr-val">${p.earnOutPct?.toFixed(2)}%</span></div>` : ''}
+            ${p.fixedPrice != null ? `<div class="detail-row"><span class="dr-label">Fixed Price (Cash)</span><span class="dr-val">€${(p.fixedPrice||0).toLocaleString('de-DE')}k</span></div>` : ''}
+            ${p.equityCash != null ? `<div class="detail-row"><span class="dr-label">Equity Cash Component</span><span class="dr-val">€${(p.equityCash||0).toLocaleString('de-DE')}k</span></div>` : ''}
+            <div class="detail-row"><span class="dr-label">EBITDA Multiple</span><span class="dr-val">${p.ebitdaMultiple?.toFixed(2) || '—'}x</span></div>
+            <div class="detail-row"><span class="dr-label">EBIT Multiple</span><span class="dr-val">${p.ebitMultiple?.toFixed(2) || '—'}x</span></div>
+            <div class="detail-row"><span class="dr-label">Projected IRR</span><span class="dr-val" style="color:var(--green);font-family:'DM Mono',monospace;font-size:15px;font-weight:700;">${p.irr != null ? p.irr.toFixed(2)+'%' : '#NUM!'}</span></div>
+          </div>
+          <div class="info-card">
+            <div class="info-card-title">Meilenstein-Daten</div>
+            <div class="detail-row"><span class="dr-label">Start Prozess</span><span class="dr-val">${fmtDate(p.start)}</span></div>
+            <div class="detail-row"><span class="dr-label">DD Start</span><span class="dr-val">${p.ddStart ? fmtDate(p.ddStart) : '—'}</span></div>
+            <div class="detail-row"><span class="dr-label">DD Ende</span><span class="dr-val">${p.ddEnd ? fmtDate(p.ddEnd) : '—'}</span></div>
+            <div class="detail-row"><span class="dr-label">Zeichnung LOI</span><span class="dr-val" style="color:var(--gold);">${p.loiDate ? fmtDate(p.loiDate) : '—'}</span></div>
+            <div class="detail-row"><span class="dr-label">Signing</span><span class="dr-val" style="color:#d97706;">${p.signingDate ? fmtDate(p.signingDate) : '—'}</span></div>
+            <div class="detail-row"><span class="dr-label">Closing</span><span class="dr-val" style="color:var(--green);">${p.closingDate ? fmtDate(p.closingDate) : '—'}</span></div>
+          </div>
+          ${p.desc ? `<div class="info-card"><div class="info-card-title">Dealnotiz</div><div style="font-size:12.5px;color:var(--muted);line-height:1.6;">${p.desc}</div></div>` : ''}
           <div class="info-card">
             <div class="info-card-title">Risikoeinschätzung</div>
             <div class="risk-matrix">${riskHtml}</div>
@@ -2955,30 +2972,136 @@ function openModal() {
   document.getElementById('f-end').value = e.toISOString().split('T')[0];
 }
 
-function getAddModalHTML() { return `<div class="modal-box"><div class="modal-title">Neuen Deal anlegen</div><div class="modal-sub">Alle Felder mit * sind Pflichtfelder.</div><div class="form-row"><div class="form-group"><label class="form-label">Projektname *</label><input class="form-input" id="f-name" placeholder="z.B. Projekt Adler"></div><div class="form-group"><label class="form-label">Branche / Sektor</label><select class="form-select" id="f-sector"><option>Industrie</option><option>Technologie</option><option>Gesundheitswesen</option><option>Dienstleistungen</option><option>Handel</option><option>Bau & Immobilien</option><option>Logistik</option><option>Sonstiges</option></select></div></div><div class="form-row"><div class="form-group"><label class="form-label">Käufer</label><input class="form-input" id="f-buyer" value="EterniTeam GmbH" readonly style="background:var(--bg2);color:var(--muted);cursor:not-allowed;"></div><div class="form-group"><label class="form-label">Target-Unternehmen *</label><input class="form-input" id="f-target" placeholder="Zielunternehmen"></div></div><div class="form-row"><div class="form-group"><label class="form-label">Startdatum *</label><input class="form-input" id="f-start" type="date"></div><div class="form-group"><label class="form-label">Ziel-Closing *</label><input class="form-input" id="f-end" type="date"></div></div><div class="form-row"><div class="form-group"><label class="form-label">Dealvolumen (Mio. €) *</label><input class="form-input" id="f-vol" type="number" placeholder="250"></div><div class="form-group"><label class="form-label">Status *</label><select class="form-select" id="f-status"><option value="active">Aktiv</option><option value="pending">Ausstehend</option><option value="closed">Abgeschlossen</option></select></div></div><div class="form-row"><div class="form-group"><label class="form-label">Aktuelle Phase</label><select class="form-select" id="f-phase"><option value="0">Phase 1 — Vorbereitung & NDA</option><option value="1">Phase 2 — Due Diligence</option><option value="2">Phase 3 — Verhandlung & LOI</option><option value="3">Phase 4 — Signing</option><option value="4">Phase 5 — Regulatory</option><option value="5">Phase 6 — Closing</option></select></div><div class="form-group"><label class="form-label">Risikolevel</label><select class="form-select" id="f-risk"><option value="low">Niedrig</option><option value="medium">Mittel</option><option value="high">Hoch</option></select></div></div><div class="form-group"><label class="form-label">Beschreibung / Dealnotiz</label><textarea class="form-textarea" id="f-desc" placeholder="Kurze Beschreibung…"></textarea></div><div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('add-modal')">Abbrechen</button><button class="btn btn-primary" onclick="addDeal()">Deal anlegen →</button></div></div>`; }
+function getAddModalHTML() { return `<div class="modal-box" style="max-width:680px;">
+<div class="modal-title">Neuen Deal anlegen</div>
+<div class="modal-sub">Felder mit * sind Pflichtfelder. Finanzielle Angaben in Tsd. €.</div>
+
+<div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-family:'DM Mono',monospace;margin:16px 0 8px;">Stammdaten</div>
+<div class="form-row">
+  <div class="form-group"><label class="form-label">Codename *</label><input class="form-input" id="f-name" placeholder="z.B. ALPHA"></div>
+  <div class="form-group"><label class="form-label">Pipeline-Status *</label>
+    <select class="form-select" id="f-dealstatus">
+      <option value="IO in preparation">IO in preparation</option>
+      <option value="IO sent">IO sent</option>
+      <option value="IO negotiation">IO negotiation</option>
+      <option value="LOI preparation">LOI preparation</option>
+      <option value="LOI sent">LOI sent</option>
+      <option value="Deal closed">Deal closed</option>
+    </select>
+  </div>
+</div>
+<div class="form-row">
+  <div class="form-group"><label class="form-label">Sektor</label><input class="form-input" id="f-sector" placeholder="z.B. Floor coating service provider"></div>
+  <div class="form-group"><label class="form-label">Region/Bundesland</label><input class="form-input" id="f-region" placeholder="z.B. Bavaria"></div>
+</div>
+<div class="form-row">
+  <div class="form-group"><label class="form-label">Target-Unternehmen *</label><input class="form-input" id="f-target" placeholder="Zielunternehmen GmbH"></div>
+  <div class="form-group"><label class="form-label">Risikolevel</label>
+    <select class="form-select" id="f-risk"><option value="low">Niedrig</option><option value="medium" selected>Mittel</option><option value="high">Hoch</option></select>
+  </div>
+</div>
+
+<div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-family:'DM Mono',monospace;margin:16px 0 8px;">Finanzkennzahlen (Tsd. €)</div>
+<div class="form-row">
+  <div class="form-group"><label class="form-label">Revenues</label><input class="form-input" id="f-revenues" type="number" placeholder="z.B. 4451"></div>
+  <div class="form-group"><label class="form-label">EBITDA</label><input class="form-input" id="f-ebitda" type="number" placeholder="z.B. 745"></div>
+</div>
+<div class="form-row">
+  <div class="form-group"><label class="form-label">EBIT</label><input class="form-input" id="f-ebit" type="number" placeholder="z.B. 727"></div>
+  <div class="form-group"><label class="form-label">EBIT Margin (%)</label><input class="form-input" id="f-ebitmargin" type="number" step="0.01" placeholder="z.B. 16.33"></div>
+</div>
+<div class="form-row">
+  <div class="form-group"><label class="form-label">EV *</label><input class="form-input" id="f-ev" type="number" placeholder="z.B. 2000"></div>
+  <div class="form-group"><label class="form-label">Earn-Out (%)</label><input class="form-input" id="f-earnout" type="number" step="0.01" placeholder="z.B. 35"></div>
+</div>
+<div class="form-row">
+  <div class="form-group"><label class="form-label">Fixed Price (Cash Invest)</label><input class="form-input" id="f-fixedprice" type="number" placeholder="z.B. 1300"></div>
+  <div class="form-group"><label class="form-label">Equity Cash Component</label><input class="form-input" id="f-equitycash" type="number" placeholder="z.B. 487"></div>
+</div>
+<div class="form-row">
+  <div class="form-group"><label class="form-label">EBITDA Multiple</label><input class="form-input" id="f-ebitdamul" type="number" step="0.01" placeholder="z.B. 2.68"></div>
+  <div class="form-group"><label class="form-label">EBIT Multiple</label><input class="form-input" id="f-ebitmul" type="number" step="0.01" placeholder="z.B. 2.75"></div>
+</div>
+<div class="form-row">
+  <div class="form-group"><label class="form-label">Projected IRR (%)</label><input class="form-input" id="f-irr" type="number" step="0.01" placeholder="z.B. 56.94"></div>
+  <div class="form-group"></div>
+</div>
+
+<div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-family:'DM Mono',monospace;margin:16px 0 8px;">Meilenstein-Daten</div>
+<div class="form-row">
+  <div class="form-group"><label class="form-label">Start Prozess *</label><input class="form-input" id="f-start" type="date"></div>
+  <div class="form-group"><label class="form-label">Ziel-Closing</label><input class="form-input" id="f-end" type="date"></div>
+</div>
+<div class="form-row">
+  <div class="form-group"><label class="form-label">DD Start</label><input class="form-input" id="f-ddstart" type="date"></div>
+  <div class="form-group"><label class="form-label">DD Ende</label><input class="form-input" id="f-ddend" type="date"></div>
+</div>
+<div class="form-row">
+  <div class="form-group"><label class="form-label">Datum Zeichnung LOI</label><input class="form-input" id="f-loidate" type="date"></div>
+  <div class="form-group"><label class="form-label">Datum Signing</label><input class="form-input" id="f-signing" type="date"></div>
+</div>
+<div class="form-row">
+  <div class="form-group"><label class="form-label">Datum Closing</label><input class="form-input" id="f-closing" type="date"></div>
+  <div class="form-group"><label class="form-label">Aktuelle Phase</label>
+    <select class="form-select" id="f-phase">
+      <option value="0">Phase 1 — Vorbereitung & NDA</option>
+      <option value="1">Phase 2 — Due Diligence</option>
+      <option value="2">Phase 3 — Verhandlung & LOI</option>
+      <option value="3">Phase 4 — Signing</option>
+      <option value="4">Phase 5 — Regulatory</option>
+      <option value="5">Phase 6 — Closing</option>
+    </select>
+  </div>
+</div>
+<div class="form-group"><label class="form-label">Beschreibung / Dealnotiz</label><textarea class="form-textarea" id="f-desc" placeholder="Kurze Beschreibung des Deals…"></textarea></div>
+<div class="modal-footer">
+  <button class="btn btn-ghost" onclick="closeModal('add-modal')">Abbrechen</button>
+  <button class="btn btn-primary" onclick="addDeal()">Deal anlegen →</button>
+</div></div>`; }
 
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 function closeModalOutside(e, id) { if (e.target.id === id) closeModal(id); }
 function openExportModal() { document.getElementById('export-modal').classList.add('open'); }
 
 function addDeal() {
-  const name = document.getElementById('f-name').value.trim();
-  const buyer = document.getElementById('f-buyer').value.trim();
+  const name   = document.getElementById('f-name').value.trim();
   const target = document.getElementById('f-target').value.trim();
-  const start = document.getElementById('f-start').value;
-  const end = document.getElementById('f-end').value;
-  const volume = parseFloat(document.getElementById('f-vol').value) || 0;
-  if (!name || !target || !start || !end) { alert('Bitte alle Pflichtfelder ausfüllen.'); return; }
+  const start  = document.getElementById('f-start').value;
+  const ev     = parseFloat(document.getElementById('f-ev').value) || 0;
+  if (!name || !target || !start) { alert('Bitte Codename, Target und Start-Datum ausfüllen.'); return; }
+  const dealStatus = document.getElementById('f-dealstatus').value;
+  const statusMap  = { 'Deal closed':'closed', 'LOI sent':'active', 'LOI preparation':'active', 'IO negotiation':'active', 'IO sent':'active', 'IO in preparation':'active' };
   const p = {
     id: nextId++, name,
-    buyer: 'EterniTeam GmbH',
-    target, start, end, volume,
-    sector: document.getElementById('f-sector').value,
-    status: document.getElementById('f-status').value,
-    phase: parseInt(document.getElementById('f-phase').value),
-    risk: document.getElementById('f-risk').value,
+    buyer: 'EterniTeam GmbH', target,
+    sector:  document.getElementById('f-sector').value.trim(),
+    region:  document.getElementById('f-region').value.trim(),
+    revenues: parseFloat(document.getElementById('f-revenues').value) || null,
+    ebitda:   parseFloat(document.getElementById('f-ebitda').value)   || null,
+    ebit:     parseFloat(document.getElementById('f-ebit').value)     || null,
+    ebitMargin: parseFloat(document.getElementById('f-ebitmargin').value) || null,
+    ev,
+    earnOutPct:  parseFloat(document.getElementById('f-earnout').value)    || null,
+    fixedPrice:  parseFloat(document.getElementById('f-fixedprice').value) || null,
+    equityCash:  parseFloat(document.getElementById('f-equitycash').value) || null,
+    ebitdaMultiple: parseFloat(document.getElementById('f-ebitdamul').value) || null,
+    ebitMultiple:   parseFloat(document.getElementById('f-ebitmul').value)   || null,
+    irr: document.getElementById('f-irr').value !== '' ? parseFloat(document.getElementById('f-irr').value) : null,
+    dealStatus,
+    status: statusMap[dealStatus] || 'active',
+    phase:  parseInt(document.getElementById('f-phase').value),
+    risk:   document.getElementById('f-risk').value,
+    start,
+    end:         document.getElementById('f-end').value     || null,
+    ddStart:     document.getElementById('f-ddstart').value || null,
+    ddEnd:       document.getElementById('f-ddend').value   || null,
+    loiDate:     document.getElementById('f-loidate').value || null,
+    signingDate: document.getElementById('f-signing').value || null,
+    closingDate: document.getElementById('f-closing').value || null,
     desc: document.getElementById('f-desc').value.trim(),
   };
+  // If no end date set, estimate 12 months from start
+  if (!p.end) { const d = new Date(start); d.setFullYear(d.getFullYear()+1); p.end = d.toISOString().split('T')[0]; }
   projects.push(p);
   activities.unshift({ user: 'YN', text: `hat <strong>${p.name}</strong> hinzugefügt`, time: 'Gerade eben' });
   closeModal('add-modal');
